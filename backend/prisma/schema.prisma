@@ -1,0 +1,82 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("MONGO_URL")
+}
+
+model User {
+    id               String      @id @default(auto()) @map("_id") @db.ObjectId
+    name             String?
+    email            String      @unique
+    image            String?
+    favPropertyID    String[]    @db.ObjectId
+    ownedResidencies Residency[] @relation("Owner")
+    ownedPost        Tenant[]    @relation("Owner")
+}
+
+model Residency {
+    id                String   @id @default(auto()) @map("_id") @db.ObjectId
+    accommodationType String
+    type              String
+    address           String
+    room              Int
+    title             String
+    rent              Int
+    parking           String
+    internet          String
+    furnish           String
+    billsIncluded     Boolean
+    bond              Int
+    dateAvailability  DateTime
+    min               String
+    max               String
+    image             String[]
+    description       String
+
+    accepting String[]
+    features  String[]
+    overview  String[]
+
+    userEmail  String
+    facilities Json
+
+    owner     User     @relation("Owner", fields: [userEmail], references: [email])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique(fields: [address, userEmail])
+}
+
+model Tenant {
+    id           String @id @default(auto()) @map("_id") @db.ObjectId
+    name         String
+    age          Int
+    nationality  String
+    fieldOfStudy String
+    gender       String
+    introduction String
+
+    partnerName         String
+    partnerGender       String
+    partnerNationality  String
+    partnerFieldOfStudy String
+
+    groupMembers String[]
+
+    monthlyBudget     Int
+    preferredMoveDate String
+    maxFlatmates      String
+    parking           String
+    image             String[]
+    location          String
+    placeType         String
+    userEmail         String
+    owner             User     @relation("Owner", fields: [userEmail], references: [email])
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    details String[]
+}

@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* default base styles for specific HTML elements,  */
+@layer base {
+
+}
+
+/* add styles to tailwind's base, components, utiities layers */
+@layer components {
+
+}
+
+@layer utilities {
+    .active-link {
+        @apply relative after:w-2/3 after:h-[2px] after:rounded-full after:bg-black after:absolute after:-bottom-2 after:left-0;
+    }
+
+    .btn-dark {
+        @apply medium-14 bg-black text-white ring-1 ring-white px-7 py-2 rounded-lg;
+    }
+
+    .max-pad-container {
+        @apply mx-auto max-w-[1440px] px-6 lg:px-12;
+    }
+
+    .medium-14 {
+        @apply text-[14px] font-[500];
+    }
+
+    .medium-15 {
+        @apply text-[15px] font-[500];
+    }
+}
