@@ -6,7 +6,7 @@ export const createTenant = asyncHandler(async (req, res) => {
     const { name, nationality, fieldOfStudy, gender, introduction,
         partnerName, partnerGender, partnerNationality, partnerFieldOfStudy,
         groupMembers, monthlyBudget, preferredMoveDate, maxFlatmates,
-        parking, image, location, placeType, age, details
+        parking, image, location, placeType, age, details, userEmail
     } = req.body.data || req.body
 
     console.log("created tenant component")
@@ -39,10 +39,10 @@ export const createTenant = asyncHandler(async (req, res) => {
 
         res.send({message: "Tenant card is created successfully", tenant})
     } catch (e) {
-        if (err.code === "P2002"){
+        if (e.code === "P2002"){
             throw new Error("Already have a residency with this address")
         }
-        throw new Error(err.message)
+        throw new Error(e.message)
     }
 })
 

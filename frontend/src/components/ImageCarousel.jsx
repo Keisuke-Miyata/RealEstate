@@ -1,9 +1,10 @@
 import React, { useState } from "react"
-import { FaRegStar, FaStar } from "react-icons/fa"
+import FavoriteButton from "./FavoriteButton"
+import { useLocation } from "react-router-dom"
 
 const ImageCarousel = ({ images }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [isFavorite, setIsFavorite] = useState(false);
+   
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -12,10 +13,8 @@ const ImageCarousel = ({ images }) => {
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
     };
-
-    const toggleFavorite = () => {
-        setIsFavorite((prevState) => !prevState);
-    };
+    const { pathname } = useLocation()
+    const id = pathname.split('/').slice(-1)[0]
 
     if (!images || images.length === 0) {
         return <div>No images available</div>;
@@ -24,17 +23,8 @@ const ImageCarousel = ({ images }) => {
 
         <div id="default-carousel" className="relative w-full top-20" data-carousel="slide">
             {/* Favorite button */}
-            <button
-                onClick={toggleFavorite}
-                className="absolute top-5 right-5 z-20 flex items-center px-4 py-2 bg-white rounded-lg shadow-md border hover:bg-gray-100 focus:ring focus:ring-blue-300"
-            >
-                {isFavorite ? (
-                    <FaStar className="w-5 h-5 mr-2 text-yellow-500" />
-                ) : (
-                    <FaRegStar className="w-5 h-5 mr-2 text-gray-500" />
-                )}
-                <span className="text-gray-700">{isFavorite ? "Favorited" : "Favorite"}</span>
-            </button>
+            <FavoriteButton id={id}/>
+
             {/* Carousel wrapper */}
             <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
                 {images.map((image, index) => (

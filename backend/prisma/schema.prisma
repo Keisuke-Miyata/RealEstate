@@ -64,10 +64,10 @@ model Tenant {
     partnerNationality  String
     partnerFieldOfStudy String
 
-    groupMembers String[]
+    groupMembers Json
 
     monthlyBudget     Int
-    preferredMoveDate String
+    preferredMoveDate DateTime
     maxFlatmates      String
     parking           String
     image             String[]
@@ -79,4 +79,6 @@ model Tenant {
     updatedAt         DateTime @updatedAt
 
     details String[]
+    @@unique(fields: [userEmail])
+
 }

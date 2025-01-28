@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Select, TextInput, NumberInput, Button, Checkbox, Group } from "@mantine/core";
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
+import { DateInput } from "@mantine/dates"
 import axios from "axios"; // Make sure you have axios installed for API calls
 
 const AddTenant = () => {
     const [preference, setPreference] = useState(""); // To track selected option
     const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]); // Group members state
     const [activeUploadStep, setActiveUploadStep] = useState(0);
-    const [details, setDetails] = useState([])
 
     // Form state for tenant details
     const [formData, setFormData] = useState({
@@ -112,11 +112,11 @@ const AddTenant = () => {
                     value={formData.monthlyBudget}
                     onChange={(value) => setFormData({ ...formData, monthlyBudget: value })}
                 />
-                <NumberInput
+                <DateInput
                     label="Preferred move date"
                     className="mb-10"
                     value={formData.preferredMoveDate}
-                    onChange={(value) => setFormData({ ...formData, preferredMoveDate: value })}
+                    onChange={(value) => setFormData((prev) =>({ ...prev, preferredMoveDate: value }))}
                 />
                 <Select
                     label="Max number of flatmates"
@@ -296,6 +296,7 @@ const AddTenant = () => {
 
                 {/* Detais */}
                 <Checkbox.Group
+                    label="Select your preference"
                     value={formData.details}
                     onChange={(selectedDetails) =>
                         setFormData((prevData) => ({
@@ -303,8 +304,6 @@ const AddTenant = () => {
                             details: selectedDetails,
                         }))
                     }
-                    defaultValue={['furnish']}
-                    label="Select your preference"
                 // description="This is anonymous"
                 >
                     <Group mt="xl">

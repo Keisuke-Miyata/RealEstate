@@ -1,7 +1,13 @@
 import React, { Suspense } from "react"
 import { Link, Await, data } from "react-router-dom"
+import { Avatar, Menu } from "@mantine/core"
+import { useNavigate } from "react-router-dom"
+import { useAuth0 } from "@auth0/auth0-react"
+
 
 const Profile = () => {
+
+    const { user, logout } = useAuth0()
     return (
         <div className="m-24">
             {/* User Information Section */}
@@ -19,21 +25,19 @@ const Profile = () => {
                 <div className="flex flex-col gap-4">
                     <span className="flex items-center gap-2">
                         Avatar:
-                        {/* Uncomment and use actual avatar */}
-                        {/* <img src={currentUser.avatar} alt="Avatar" className="w-12 h-12 rounded-full" /> */}
-                        <img
-                            src="https://via.placeholder.com/48"
-                            alt="Avatar"
-                            className="w-12 h-12 rounded-full"
-                        />
+                        <img src={user.picture} alt="avatar" className="w-12 h-12 rounded-full" />
                     </span>
                     <span>
-                        Username: <b>Username</b>
+                        Username: <b>{user.name}</b>
                     </span>
                     <span>
-                        Email: <b>Email</b>
+                        Email: <b>{user.email}</b>
                     </span>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-[150px]">
+                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-[150px]" 
+                        onClick={()=>{
+                            localStorage.clear()
+                            logout()
+                    }}>
                         Logout
                     </button>
                 </div>

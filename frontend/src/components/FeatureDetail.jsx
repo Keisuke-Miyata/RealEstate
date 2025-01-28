@@ -15,15 +15,15 @@ const FeatureDetail = ({ post }) => {
                     <h5>{post.bills ? "with" : "without"} bills</h5>
                 </div>
                 <ul className='flex gap-6 pl-5'>
-                    <li className="flex items-center gap-1"><FaBed /> {post.bedroom}</li>
-                    <li className="flex items-center gap-1"><FaShower /> {post.bathroom}</li>
-                    <li className="flex items-center gap-1"><FaHouseUser /> {post.bedroom}</li>
+                    <li className="flex items-center gap-1"><FaBed /> {post.room}</li>
+                    <li className="flex items-center gap-1"><FaShower /> {post.room}</li>
+                    <li className="flex items-center gap-1"><FaHouseUser /> {post.room}</li>
                 </ul>
             </div>
             <hr/>
             <h2 className="text-[20px]">About the property</h2>
             <p>
-                {post.discription}
+                {post.description}
             </p>
             <h4>Property accepting of</h4>
             <ul className="flex flex-wrap gap-2 mt-5 mb-5">
@@ -43,8 +43,8 @@ const FeatureDetail = ({ post }) => {
                     <p>HUF {post.bond} bond</p>
                     <p>Private room</p>
                     <p>Minimun {post.min} stay</p>
-                    <p>Available {post.date_start}</p>
-                    <p>{post.furnished ? "Furnished" : "Unfurnished"}</p>
+                    <p>Available {post.dateAvailability}</p>
+                    <p>{post.furnish}</p>
                     <p>Anyone including couples</p>
                 </div>
                 <div>

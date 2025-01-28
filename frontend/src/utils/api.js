@@ -1,4 +1,5 @@
 import axios from "axios"
+import { data } from "react-router-dom"
 
 export const api = axios.create({
     baseURL: "http://localhost:3000/api"
@@ -72,7 +73,7 @@ export const getAllFav = async (email, token) => {
                 }
             }
         )
-        return res.data["favResidenciesID"]
+        return res.data["favPropertyID"]
     } catch (e) {
         throw e
     }
@@ -83,7 +84,7 @@ export const createResidency = async (data, token, userEmail) => {
     console.log(requestData)
 
     try {
-        const res = await api.post(`/residency/create`,
+        const res = await api.post(`/property/createProperty`,
             requestData,
             {
                 headers: {
@@ -93,5 +94,52 @@ export const createResidency = async (data, token, userEmail) => {
         )
     } catch (e) {
         throw e
+    }
+}
+
+export const createTenant = async (data, token, userEmail) => {
+    const requestData = {...data, userEmail}
+    console.log(requestData)
+
+    try {
+        const res = await api.post(`/tenant/createTenant`,
+            requestData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+        )
+    } catch (e) {
+        throw e
+    }
+}
+
+export const getAllTenants = async () => {
+    try {
+        const response = await api.get(`/tenant/allTenants`, {
+            timeout: 10 * 1000,
+        })
+        if (response.status === 400 || response.status === 500){
+            throw response.data
+        }
+        return response.data.reverse()
+    } catch (error) {
+        throw error
+    }
+}
+
+export const getTenant = async (id) => {
+    // console.log(`Fetching tenant with ID: ${id}`);
+    try {
+        const response = await api.get(`/tenant/${id}`, {
+            timeout: 10 * 1000,
+        })
+        if (response.status === 400 || response.status === 500) {
+            throw response.data
+        }
+        return response.data
+    } catch (error) {
+        throw error
     }
 }

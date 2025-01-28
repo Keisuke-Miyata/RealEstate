@@ -5,6 +5,7 @@ import Item from "../components/Item"
 
 const Place = () => {
     const { data, isError, isLoading } = useProperties()
+    console.log(data)
     if (isError){
         return (
             <div>

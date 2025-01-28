@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import useProperties from "../hooks/useProperties"
-import{ PuffLoader } from "react-spinners"
-import Item from "../components/Item"
+import useTenant from "../hooks/useTenant"
+import { PuffLoader } from "react-spinners"
+import TenantItem from "../components/TenantItem"
 
 const Tenants = () => {
-    const { data, isError, isLoading } = useProperties()
-    if (isError){
+    const { data, isError, isLoading } = useTenant()
+    if (isError) {
         return (
             <div>
                 <span>Error while fetching data</span>
@@ -28,12 +28,10 @@ const Tenants = () => {
 
     return (
         <main>
-            <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center">
-                    {data.map((property) =>
-                        <Item key={property.title} property={property} />
-                        )}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-28">
+                {data.map((tenant) =>
+                    <TenantItem key={tenant.title} tenant={tenant} />
+                )}
             </div>
         </main>
     )

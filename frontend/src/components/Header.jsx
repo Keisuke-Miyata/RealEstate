@@ -4,6 +4,8 @@ import homeLogo from "../assets/react_logo.png"
 import Navbar from "./Navbar"
 import { MdMenu, MdClose } from "react-icons/md"
 import { LuUserRound } from "react-icons/lu"
+import { useAuth0 } from "@auth0/auth0-react"
+import ProfileMenu from "../components/ProfileMenu"
 
 const Header = () => {
 
@@ -26,6 +28,8 @@ const Header = () => {
             window.removeEventListener("scroll", handleScroll)
         }
     }, [menuOpened])
+
+    const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
 
     return (
         <header className={`${active ? "py-1 bg-white shadow-md" : "py-2"} max-pad-container fixed top-0 w-full left-0 right-0 z-50 transition-all duration-200`}>
@@ -52,12 +56,12 @@ const Header = () => {
                     ) : (
                         <MdClose onClick={toggleMenu} className='xl:hidden cursor-pointer text-3xl' />
                     )}
-                    <Link to="/login">
-                        <button className='flex items-center justify-center gap-x-2 !px-5 btn-dark'>
+                    {/* <Link to="/login"> */}
+                        {!isAuthenticated ? <button className='flex items-center justify-center gap-x-2 !px-5 btn-dark' onClick={loginWithRedirect}>
                             <LuUserRound className="text-xl" />
                             <span>Log In</span>
-                        </button>
-                    </Link>
+                        </button> : <ProfileMenu user={user} logout={logout} />}
+                    {/* </Link> */}
 
                 </div>
             </div>

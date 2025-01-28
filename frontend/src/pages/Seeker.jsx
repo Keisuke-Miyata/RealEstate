@@ -3,6 +3,9 @@ import { listSeeker } from "../lib/data"
 import { useParams } from "react-router-dom"
 import ImageCarousel from "../components/ImageCarousel"
 import SeekerDetails from "../components/SeekerDetails"
+import { useQuery } from "react-query";
+import { getTenant } from "../utils/api"
+import { PuffLoader } from "react-spinners"
 
 const Seeker = () => {
 
@@ -10,31 +13,37 @@ const Seeker = () => {
     const[post, setPost] = useState(null)
     const[loading, setLoading] = useState(true)
 
-    useEffect(()=>{
-        const fetchData = () => {
-            const seeker = listSeeker.find((item) => parseInt(item.id, 10) === parseInt(id, 10))
-            if(seeker){
-                setPost(seeker)
-            }else {
-                console.log("Seeker's post is not found")
-            }
-            setLoading(false)
+    const { data, isError, isLoading } = useQuery(
+        "tenant",
+        () => getTenant(id),
+        {
+            retry: false,
+            refetchOnWindowFocus: false,
         }
-        fetchData();
-    }, [id])
+    )
 
-    if(loading){
-        <div>Loading...</div>
+    if(isLoading){
+        return (
+            <div className="h-64 flexCenter">
+                <PuffLoader
+                    height="80"
+                    width="80"
+                    radius={1}
+                    color="#555"
+                    aria-label="puff-loading"
+                />
+            </div>
+        )
     }
 
-    if(!post) {
-        return <div>Seeker's post not found</div>
+    if(isError) {
+        return <div>Error while fething tenant data</div>
     }
 
     return (
         <div className="m-16">
-            <ImageCarousel images={post.images} />
-            <SeekerDetails post={post} />
+            <ImageCarousel images={data.image} />
+            <SeekerDetails post={data} />
         </div>
     )
 }
