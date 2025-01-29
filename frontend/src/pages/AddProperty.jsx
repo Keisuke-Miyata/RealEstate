@@ -1,31 +1,41 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Stepper, Button, Group, NumberInput, Select, TextInput, Radio, Textarea, Checkbox } from '@mantine/core';
 import { DateInput } from '@mantine/dates'
 import UploadImage from '../components/UploadImage';
 import PreviewProperty from "../components/PreviewProperty";
+import { useAuth0 } from "@auth0/auth0-react"
+import { createResidency } from "../utils/api";
+import UserDetailContext from '../context/UserDetailContext';
+import { useMutation } from 'react-query';
+import useProperties from '../hooks/useProperties';
+import { toast } from "react-toastify"
 
 function AddProperty() {
     const [active, setActive] = useState(0);
     const [activeUploadStep, setActiveUploadStep] = useState(0); // Separate state for UploadImage steps
+    const { user } = useAuth0()
     const [propertyDetails, setPropertyDetails] = useState({
+        title: "",
         accommodationType: "",
         type: "",
         address: "",
-        room: null,
-        rent: null,
+        room: 0,
+        rent: 0,
         parking: "",
         internet: "",
         furnish: "",
         billsIncluded: false,
-        bond: null,
-        dateAvailability: "",
+        bond: 0,
+        dateAvailability: new Date(),
         min: "",
         max: "",
-        image: null,
+        image: "",
         description: "",
         accepting: [],
         features: [],
-        overview: []
+        overview: [],
+        facilities: {},
+        userEmail: user?.email
     });
 
     const [value, setValue] = useState([])
@@ -49,11 +59,66 @@ function AddProperty() {
         setPropertyDetails((prev) => ({ ...prev, [field]: value }));
     };
 
+    const {
+        userDetails: { token },
+    } = useContext(UserDetailContext)
+    const { refetch: refetchProperties } = useProperties()
+
+    const { mutate, isLoading } = useMutation({
+        mutationFn: () =>
+            createResidency(
+                propertyDetails,
+                token,
+                user?.email
+            ),
+        onError: ({ response }) =>
+            toast.error(response.data.message, { position: "bottom-right" }),
+        onSettled: () => {
+            toast.success("Added successfully", { position: "bottom-right" })
+            setPropertyDetails({
+                title: "",
+                accommodationType: "",
+                type: "",
+                address: "",
+                room: 0,
+                rent: 0,
+                parking: "",
+                internet: "",
+                furnish: "",
+                billsIncluded: false,
+                bond: 0,
+                dateAvailability: new Date(),
+                min: "",
+                max: "",
+                image: "",
+                description: "",
+                accepting: [],
+                features: [],
+                overview: [],
+                facilities: {},
+                userEmail: user?.email
+            })
+            refetchProperties();
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 3000);
+        }
+    })
+
 
     return (
         <div className='mt-24 ml-[30%] mr-[28%]'>
             <Stepper active={active} onStepClick={setActive}>
                 <Stepper.Step label="First step" description="Fill out information">
+                    <TextInput
+                        placeholder="title"
+                        label="Title"
+                        className='mb-10'
+                        value={propertyDetails.title}
+                        onChange={(e) =>
+                            setPropertyDetails((prev) => ({ ...prev, title: e.target.value }))
+                        }
+                    />
                     <Select
                         label="What type of accommodation are you offering?"
                         placeholder="Pick value"
@@ -180,14 +245,19 @@ function AddProperty() {
                         onChange={handleSelectChange("bond")}
                     />
                     <h2>Property Availability</h2>
+                    {console.log(propertyDetails.address)}
                     <DateInput
                         value={propertyDetails.dateAvailability}
                         onChange={(value) =>
-                            setPropertyDetails((prev) => ({ ...prev, dateAvailability: value }))
+                            setPropertyDetails((prev) => ({
+                                ...prev,
+                                dateAvailability: value
+                            }))
                         }
                         label="Date input"
                         placeholder="Date input"
                     />
+
 
                     <Select
                         label="Minimum length of stay"
@@ -225,6 +295,14 @@ function AddProperty() {
                 </Stepper.Step>
                 <Stepper.Step label="Final step" description="Preview">
                     <PreviewProperty propertyDetails={propertyDetails} />
+                    <Group justify="center" className='mt-10'>
+                        <Button
+                            onClick={() => mutate()}
+                            loading={isLoading}
+                        >
+                            Submit
+                        </Button>
+                    </Group>
                 </Stepper.Step>
                 <Stepper.Completed>
                     Completed, click back button to get to previous step

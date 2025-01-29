@@ -2,7 +2,7 @@ import { Button, Group } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdOutlineCloudUpload } from "react-icons/md";
 
-const UploadImage = ({ activeUploadStep, prevUploadStep, nextUploadStep, details, setDetails }) => {
+const UploadImage = ({ activeUploadStep, prevStep, nextStep, details, setDetails }) => {
     const [imageURL, setImageURL] = useState(null);
     const cloudinaryRef = useRef();
     const widgetRef = useRef();
@@ -14,7 +14,7 @@ const UploadImage = ({ activeUploadStep, prevUploadStep, nextUploadStep, details
             image: [...(prev.image || []), imageURL],
         }));
         setImageURL(null); // Reset for the next image upload
-        nextUploadStep();
+        nextStep();
     };
 
     // Initialize Cloudinary upload widget
@@ -74,7 +74,7 @@ const UploadImage = ({ activeUploadStep, prevUploadStep, nextUploadStep, details
 
             {/* Navigation buttons */}
             <Group justify="center" mt={"xl"}>
-                <Button onClick={prevUploadStep}>Go Back</Button>
+                <Button onClick={prevStep}>Go Back</Button>
                 <Button onClick={handleNext} disabled={!imageURL}>
                     {activeUploadStep < 2 ? "Next Image" : "Finish"}
                 </Button>

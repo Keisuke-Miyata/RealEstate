@@ -16,6 +16,7 @@ import Item from "./pages/Item"
 import Tenants from "./pages/Tenants"
 import "@mantine/core/styles.css"
 import "@mantine/dates/styles.css"
+import { ToastContainer } from 'react-toastify'
 
 
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -52,7 +53,10 @@ const App = () => {
 
             </Routes>
           </BrowserRouter>
+          <ToastContainer />
         </MantineProvider>
+        
+
       </QueryClientProvider>
     </UserDetailContext.Provider>
 

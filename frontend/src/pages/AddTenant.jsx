@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Select, TextInput, NumberInput, Button, Checkbox, Group } from "@mantine/core";
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
-import axios from "axios"; // Make sure you have axios installed for API calls
+// import axios from "axios"; // Make sure you have axios installed for API calls
+import { useAuth0 } from "@auth0/auth0-react"
+import UserDetailContext from "../context/UserDetailContext";
+import { useMutation } from "react-query"
+import { createTenant } from "../utils/api";
+import { toast } from "react-toastify";
+import useTenant from "../hooks/useTenant";
 
 const AddTenant = () => {
     const [preference, setPreference] = useState(""); // To track selected option
     const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]); // Group members state
     const [activeUploadStep, setActiveUploadStep] = useState(0);
+    const { user } = useAuth0()
 
     // Form state for tenant details
     const [formData, setFormData] = useState({
@@ -23,14 +30,15 @@ const AddTenant = () => {
         partnerFieldOfStudy: "",
         groupMembers: [],
         monthlyBudget: null,
-        preferredMoveDate: "",
+        preferredMoveDate: new Date(),
         maxFlatmates: "",
         parking: "",
         image: null,
         location: "",
         placeType: "",
         age: null,
-        details: []
+        details: [],
+        userEmail: user?.email
     });
 
     // Handle input changes
@@ -52,6 +60,51 @@ const AddTenant = () => {
     const removeGroupMember = (id) => {
         setGroupMembers(groupMembers.filter((member) => member.id !== id));
     };
+
+    const {
+        userDetails: { token }
+    } = useContext(UserDetailContext)
+    const { refetch: refetchTenant } = useTenant()
+
+    const { mutate, isLoading } = useMutation({
+        mutationFn: () =>
+            createTenant(
+                formData,
+                token,
+                user?.email
+            ),
+        onError: ({ response }) =>
+            toast.error(response.data.message, { position: "bottom-right" }),
+        onSettled: () => {
+            toast.success("Added successfully", { position: "bottom-right" })
+            setFormData({
+                name: "",
+                nationality: "",
+                fieldOfStudy: "",
+                gender: "",
+                introduction: "",
+                partnerName: "",
+                partnerGender: "",
+                partnerNationality: "",
+                partnerFieldOfStudy: "",
+                groupMembers: [],
+                monthlyBudget: null,
+                preferredMoveDate: new Date(),
+                maxFlatmates: "",
+                parking: "",
+                image: null,
+                location: "",
+                placeType: "",
+                age: null,
+                details: [],
+                userEmail: user?.email
+            })
+            refetchTenant()
+            // setTimeout(()=> {
+            //     window.location.href = "/";
+            // }, 3000)
+        }
+    })
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -116,7 +169,7 @@ const AddTenant = () => {
                     label="Preferred move date"
                     className="mb-10"
                     value={formData.preferredMoveDate}
-                    onChange={(value) => setFormData((prev) =>({ ...prev, preferredMoveDate: value }))}
+                    onChange={(value) => setFormData((prev) => ({ ...prev, preferredMoveDate: value }))}
                 />
                 <Select
                     label="Max number of flatmates"
@@ -296,15 +349,14 @@ const AddTenant = () => {
 
                 {/* Detais */}
                 <Checkbox.Group
+                    defaultValue={["Furnished room required"]}
                     label="Select your preference"
                     value={formData.details}
                     onChange={(selectedDetails) =>
                         setFormData((prevData) => ({
                             ...prevData,
                             details: selectedDetails,
-                        }))
-                    }
-                // description="This is anonymous"
+                        }))}
                 >
                     <Group mt="xl">
                         <Checkbox value="Furnished room required" label="Furnish" />
@@ -326,9 +378,15 @@ const AddTenant = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center mt-20 mb-10">
-                    <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
+                        <Button
+                            onClick={() => mutate()}
+                            loading={isLoading}
+                        >
+                            Submit
+                        </Button>
+                    {/* <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
                         Submit
-                    </Button>
+                    </Button> */}
                 </div>
             </form>
         </div>

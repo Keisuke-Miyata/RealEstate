@@ -15,7 +15,7 @@ const PreviewProperty = ({ propertyDetails }) => {
                     <p><strong>Size:</strong> {propertyDetails.size || "N/A"} sqm</p>
                     <p><strong>Rent:</strong> {propertyDetails.rent || "N/A"} per month</p>
                     <p><strong>Bond:</strong> {propertyDetails.bond || "N/A"}</p>
-                    <p><strong>Available From:</strong> {propertyDetails.dateAvailability || "N/A"}</p>
+                    <p><strong>Available From:</strong> {propertyDetails.dateAvailability.toString() || "N/A"}</p>
                 </div>
 
                 {/* Features */}
