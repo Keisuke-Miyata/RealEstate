@@ -1,13 +1,38 @@
-import React, { Suspense } from "react"
+import React, { Suspense, useState, useEffect, useContext } from "react"
 import { Link, Await, data } from "react-router-dom"
 import { Avatar, Menu } from "@mantine/core"
 import { useNavigate } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
-
+import UserDetailContext from "../context/UserDetailContext"
+import { getAllFav } from "../utils/api"
 
 const Profile = () => {
 
-    const { user, logout } = useAuth0()
+    const { user, logout, getAccessTokenSilently } = useAuth0()
+    const { token } = useContext(UserDetailContext)
+    const [favorites, setFavorites] = useState([])
+    
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                if (user?.email) {
+                    const favs = await getAllFav(user.email, token);
+                    setFavorites(favs);
+                }
+            } catch (error) {
+                console.log("Error while fetching data", error);
+            }
+        };
+    
+        if (user) {
+            fetchFavorites();
+        }
+    }, [user, getAccessTokenSilently]);
+    
+
+
+
     return (
         <div className="m-24">
             {/* User Information Section */}
@@ -69,6 +94,23 @@ const Profile = () => {
             <div className="mt-12">
                 <h1 className="text-xl font-bold mb-4">Saved List</h1>
                 <hr className="mb-4 border-black"  />
+
+                {favorites.length > 0 ? (
+                    <ul>
+                        {favorites.map((favId) => (
+                            <li key={favId}>
+                                <Link to={`/place/${favId}`} className="text-blue-500 hover:underline">
+                                    Property {favId}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No saved properties yet.</p>
+
+                )}
+                {console.log(favorites)}
+
                 {/* Uncomment below for Suspense List */}
                 {/* <Suspense fallback={<p>Loading...</p>}>
                     <Await

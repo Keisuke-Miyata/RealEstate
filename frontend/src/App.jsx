@@ -17,6 +17,7 @@ import Tenants from "./pages/Tenants"
 import "@mantine/core/styles.css"
 import "@mantine/dates/styles.css"
 import { ToastContainer } from 'react-toastify'
+import { ShareProvider } from './context/ShareProvider'
 
 
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -31,6 +32,7 @@ const App = () => {
   })
 
   return (
+    <ShareProvider>
     <UserDetailContext.Provider value={{ userDetails, setUserDetails }}>
       <QueryClientProvider client={queryClient}>
         <MantineProvider>
@@ -46,7 +48,6 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/places" element={<Place />} />
                 <Route path="/tenants" element={<Tenants />} />
-                {/* <Route path="/profile/update" /> */}
                 <Route path="/item/:id" element={<ItemDetail />} />
                 <Route path="/item" element={<Item />} />
               </Route>
@@ -59,7 +60,7 @@ const App = () => {
 
       </QueryClientProvider>
     </UserDetailContext.Provider>
-
+</ShareProvider>
   )
 }
 

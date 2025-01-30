@@ -63,9 +63,9 @@ export const toFav = async (id, email, token) => {
 }
 
 export const getAllFav = async (email, token) => {
-    if (!token) return
+    if (!token) return []
     try {
-        const res = await api.post(`/user/allFav`,
+        const res = await api.get(`/user/allFav`,
             {email},
             {
                 headers: {
@@ -73,9 +73,10 @@ export const getAllFav = async (email, token) => {
                 }
             }
         )
-        return res.data["favPropertyID"]
+        return res.data["favPropertyID"] || []
     } catch (e) {
-        throw e
+        console.error("error getting favorites")
+        return []
     }
 }
 

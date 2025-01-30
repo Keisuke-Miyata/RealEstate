@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom"
 
 const ImageCarousel = ({ images }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-   
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -15,6 +14,8 @@ const ImageCarousel = ({ images }) => {
     };
     const { pathname } = useLocation()
     const id = pathname.split('/').slice(-1)[0]
+    const parts = pathname.split('/')
+    const type = parts[parts.length - 2]
 
     if (!images || images.length === 0) {
         return <div>No images available</div>;
@@ -23,7 +24,7 @@ const ImageCarousel = ({ images }) => {
 
         <div id="default-carousel" className="relative w-full top-20" data-carousel="slide">
             {/* Favorite button */}
-            <FavoriteButton id={id}/>
+            <FavoriteButton id={id} type={type}/>
 
             {/* Carousel wrapper */}
             <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
