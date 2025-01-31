@@ -1,4 +1,6 @@
 import { useEffect, useContext, useState, createContext } from "react"
+import { getProperty, getTenant, getItem } from "../utils/api"; // Import API functions
+import { useAuth0 } from "@auth0/auth0-react"
 
 const SharedContext = createContext()
 export const useSharecontext = () => useContext(SharedContext);
@@ -6,6 +8,11 @@ export const useSharecontext = () => useContext(SharedContext);
 
 export const ShareProvider = ({ children }) => {
     const LocalStorageKey = "userFavorites";
+    const [favoriteItems, setFavoriteItems] = useState([]);
+    // const { user } = useAuth0();
+    // const [userResidencies, setUserResidencies] = useState([]);
+
+
     const [favorites, setFavorites] = useState(()=> {
         const storedFavorites = JSON.parse(localStorage.getItem(LocalStorageKey))
         return Array.isArray(storedFavorites) ? storedFavorites : []
@@ -42,9 +49,57 @@ export const ShareProvider = ({ children }) => {
         localStorage.setItem(LocalStorageKey, JSON.stringify(favorites));
     }, [favorites]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const dataPromises = favorites.map(async (fav) => {
+                    let item = null;
+                    if (fav.type === "place") {
+                        item = await getProperty(fav.id);
+                    } else if (fav.type === "seeker") {
+                        item = await getTenant(fav.id);
+                    } else if (fav.type === "items") {
+                        item = await getItem(fav.id);
+                    }
+
+                    if (item) {
+                        return { ...item, category: fav.type };
+                    }
+                    return null;
+                });
+
+                const data = await Promise.all(dataPromises);
+                setFavoriteItems(data.filter((item) => item !== null)); // Remove null values
+            } catch (error) {
+                console.error("Error fetching favorite items:", error);
+            }
+        };
+
+        if (favorites.length > 0) {
+            fetchData();
+        } else {
+            setFavoriteItems([]); // Reset if no favorites
+        }
+    }, [favorites]);
+
+    // useEffect(() => {
+    //     const fetchResidencies = async () => {
+    //         if (!user?.email) return;
+
+    //         try {
+    //             const residencies = await getUserProperty(user.email);
+    //             setUserResidencies(residencies);
+    //         } catch (error) {
+    //             console.error("Error fetching user residencies:", error);
+    //         }
+    //     };
+
+    //     fetchResidencies();
+    // }, [user]);
+
     return (
         <SharedContext.Provider
-            value={{ favorites, addFavorite, clearFavorites, removeFavorite}}
+            value={{ favorites, addFavorite, clearFavorites, removeFavorite, favoriteItems}}
         >
             {children}
         </SharedContext.Provider>

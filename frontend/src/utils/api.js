@@ -144,3 +144,65 @@ export const getTenant = async (id) => {
         throw error
     }
 }
+
+export const getAllItems = async () => {
+    try {
+        const response = await api.get("/item/allItems", {
+            timeout: 10 * 1000,
+        })
+        if (response.status === 400 || response.status === 500){
+            throw response.data
+        }
+        return response.data.reverse()
+    } catch (error) {
+        throw error
+    }
+}
+
+export const getItem = async (id) => {
+    try {
+        const response = await api.get(`/item/${id}`, {
+            timeout: 10* 1000,
+        })
+        if (response.status === 400 || response.status === 500) {
+            throw response.data
+        }
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createItem = async (data, token, userEmail) => {
+    const requestData = {...data, userEmail}
+    console.log(requestData)
+
+    try {
+        const res = await api.post(`/item/createItem`,
+            requestData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+        )
+    } catch (e) {
+        throw e
+    }
+}
+
+// export const getUserProperty = async (userEmail) => {
+//     try {
+//         const response = await api.get(`/property/allUserProperties`, {
+//             params: { userEmail },
+//             timeout: 10 * 1000,
+//         });
+
+//         if (response.status === 400 || response.status === 500){
+//             throw response.data
+//         }
+//         return response.data;
+//     } catch (error) {
+//         throw error
+//     }
+// }

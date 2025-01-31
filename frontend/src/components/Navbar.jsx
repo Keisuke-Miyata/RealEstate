@@ -8,17 +8,17 @@ const Navbar = ({containerStyles}) => {
             <NavLink to="/" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
                 Home
             </NavLink>
-            <NavLink to="/shortlist" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
-                Shortlist
+            <NavLink to="/places" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
+                Property
             </NavLink>
-            <NavLink to="/message" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
-                Messages
+            <NavLink to="/tenants" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
+                Tenant
             </NavLink>
-            <NavLink to="Items" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
+            <NavLink to="/items" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
                 Items
             </NavLink>
-            <NavLink to="/signIn" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
-                Sign in
+            <NavLink to="/shortlist" className={({ isActive }) => isActive ? "active-link py-1" : "py-1"}>
+                Shortlist
             </NavLink>
         </nav>
     )

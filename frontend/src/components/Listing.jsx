@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listData, listSeeker } from "../lib/data.js";
+// import { listData, listSeeker } from "../lib/data.js";
 import { FaBed, FaShower, FaHouseUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 

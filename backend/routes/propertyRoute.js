@@ -6,6 +6,7 @@ const router = express.Router()
 router.post("/createProperty", createResidency)
 router.get("/allProperties", getAllResidencies)
 router.get("/:id", getResidency)
+// router.get("/allUserProperties", getAllUserProperties)
 
 
 export { router as propertyRoute }

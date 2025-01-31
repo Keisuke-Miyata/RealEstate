@@ -12,7 +12,7 @@ import '@mantine/core/styles.css';
 import AddTenant from './pages/AddTenant'
 import Profile from "./pages/Profile"
 import ItemDetail from './pages/ItemDetail'
-import Item from "./pages/Item"
+import Items from "./pages/Items"
 import Tenants from "./pages/Tenants"
 import "@mantine/core/styles.css"
 import "@mantine/dates/styles.css"
@@ -20,6 +20,7 @@ import { ToastContainer } from 'react-toastify'
 import { ShareProvider } from './context/ShareProvider'
 import Shortlist from "./pages/Shortlist"
 import ContactForm from "./pages/ContactForm"
+import AddItem from "./pages/AddItem"
 
 
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -50,10 +51,11 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/places" element={<Place />} />
                 <Route path="/tenants" element={<Tenants />} />
-                <Route path="/item/:id" element={<ItemDetail />} />
-                <Route path="/item" element={<Item />} />
+                <Route path="/items/:id" element={<ItemDetail />} />
+                <Route path="/items" element={<Items />} />
                 <Route path="/shortlist" element={<Shortlist />} />
                 <Route path="/contact" element={<ContactForm />} />
+                <Route path="/item" element={<AddItem />} />
               </Route>
 
             </Routes>

@@ -15,6 +15,7 @@ model User {
     favPropertyID    String[]    @db.ObjectId
     ownedResidencies Residency[] @relation("Owner")
     ownedPost        Tenant[]    @relation("Owner")
+    ownedItem        Item[]      @relation("Owner")
 }
 
 model Residency {
@@ -79,6 +80,22 @@ model Tenant {
     updatedAt         DateTime @updatedAt
 
     details String[]
-    @@unique(fields: [userEmail])
 
+    @@unique(fields: [userEmail])
+}
+
+model Item {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    condition   String
+    address     String
+    price       Int
+    image       String[]
+    description String
+    userEmail   String
+    owner       User     @relation("Owner", fields: [userEmail], references: [email])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@unique(fields: [userEmail])
 }

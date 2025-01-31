@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext"
 import { getAllFav } from "../utils/api"
+import SavedList from "../components/SavedList"
+import ProfileMyList from "../components/ProfileMyList"
 
 const Profile = () => {
 
@@ -79,6 +81,7 @@ const Profile = () => {
                     </Link>
                 </div>
                 <hr className="mb-4 border-black"  />
+                {/* <ProfileMyList /> */}
                 {/* Uncomment below for Suspense List */}
                 {/* <Suspense fallback={<p>Loading...</p>}>
                     <Await
@@ -95,20 +98,7 @@ const Profile = () => {
                 <h1 className="text-xl font-bold mb-4">Saved List</h1>
                 <hr className="mb-4 border-black"  />
 
-                {favorites.length > 0 ? (
-                    <ul>
-                        {favorites.map((favId) => (
-                            <li key={favId}>
-                                <Link to={`/place/${favId}`} className="text-blue-500 hover:underline">
-                                    Property {favId}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No saved properties yet.</p>
-
-                )}
+                <SavedList />
                 {console.log(favorites)}
 
                 {/* Uncomment below for Suspense List */}

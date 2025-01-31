@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import { userRoute } from "./routes/userRoutes.js"
 import { propertyRoute } from "./routes/propertyRoute.js"
 import { tenantRoute } from "./routes/tenantRoute.js"
+import { itemRoute } from "./routes/itemRoute.js"
 import nodemailer from "nodemailer";
 import bodyParser from "body-parser"
 
@@ -56,3 +57,4 @@ app.listen(PORT, () => {
 app.use("/api/user", userRoute)
 app.use("/api/property", propertyRoute)
 app.use("/api/tenant", tenantRoute)
+app.use("/api/item", itemRoute)

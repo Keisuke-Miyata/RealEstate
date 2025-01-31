@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { listSeeker } from "../lib/data"
+// import { listSeeker } from "../lib/data"
 import { useParams } from "react-router-dom"
 import ImageCarousel from "../components/ImageCarousel"
 import SeekerDetails from "../components/SeekerDetails"

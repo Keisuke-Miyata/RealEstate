@@ -70,3 +70,21 @@ export const getResidency = asyncHandler(async (req, res) => {
 
     }
 })
+
+// export const getAllUserProperties = asyncHandler(async (req, res) => {
+//     const email = req.query;
+
+//     try {
+//         const whereClause = userEmail ? { userEmail: email } : {};
+
+//         const properties = await prisma.residency.findMany({
+//             where: whereClause,
+//             orderBy: {
+//                 createdAt: "desc",
+//             },
+//         });
+//         res.json(residencies)
+//     } catch (error) {
+//         res.status(500).json({ message: "Error fetching properties", error});
+//     }
+// })
