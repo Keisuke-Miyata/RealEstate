@@ -19,6 +19,7 @@ import "@mantine/dates/styles.css"
 import { ToastContainer } from 'react-toastify'
 import { ShareProvider } from './context/ShareProvider'
 import Shortlist from "./pages/Shortlist"
+import ContactForm from "./pages/ContactForm"
 
 
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -52,6 +53,7 @@ const App = () => {
                 <Route path="/item/:id" element={<ItemDetail />} />
                 <Route path="/item" element={<Item />} />
                 <Route path="/shortlist" element={<Shortlist />} />
+                <Route path="/contact" element={<ContactForm />} />
               </Route>
 
             </Routes>
