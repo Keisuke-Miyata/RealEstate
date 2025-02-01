@@ -33,4 +33,16 @@
     .medium-15 {
         @apply text-[15px] font-[500];
     }
+
+    .puffloader {
+        @apply flex items-center justify-center h-screen;
+    }
+
+    .card-border {
+        @apply p-4 bg-white shadow-md rounded-md flex flex-col w-[300px] h-[360px] border border-gray-400;
+    }
+
+    .card-detail {
+        @apply m-16 md:ml-28 md:mr-28 lg:ml-48 lg:mr-48 xl:ml-96 xl:mr-96;
+    }
 }

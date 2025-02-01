@@ -10,13 +10,13 @@ const Hero = () => {
             <div className="relative top-32">
                 <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-4">
                     {/* First Button */}
-                    <div className="col-start-1 col-span-1">
+                    <div className="col-start-1 col-span-1 w-[340px]">
                         <button
                             onClick={() => navigate("/tenant")}
-                            className="bg-red-200 px-6 py-10 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
-                            <div>
+                            className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
+                            <div className='m'>
                                 Offering a place to stay
-                                <h4 className="bg-black text-white mt-2 text-center">I need a tenant</h4>
+                                <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need a tenant</h4>
                             </div>
                             <div>
                                 <img src={house} alt="House" className="h-20 ml-4" />
@@ -25,13 +25,13 @@ const Hero = () => {
                     </div>
 
                     {/* Second Button */}
-                    <div className="col-start-q col-span-1">
+                    <div className="col-start-q col-span-1 w-[340px]">
                         <button
                             onClick={() => navigate("/place")}
-                            className="bg-red-200 px-6 py-10 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
+                            className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
                             <div>
                                 Looking for a place to stay
-                                <h4 className="bg-black text-white mt-2 text-center">I need a place</h4>
+                                <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need a place</h4>
                             </div>
                             <div>
                                 <img src={house} alt="House" className="h-20 ml-4" />

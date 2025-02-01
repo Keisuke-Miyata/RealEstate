@@ -66,3 +66,22 @@ export const getTenant = asyncHandler(async (req, res) => {
         throw new Error(err.message)
     }
 })
+
+export const getAllUserTenant = asyncHandler(async (req, res) => {
+    const { email } = req.query; // Extract email correctly
+
+    try {
+        if (!email) {
+            return res.status(400).json({ message: "Email query parameter is required" });
+        }
+
+        const tenants = await prisma.tenant.findMany({
+            where: { owner: { email } }, // Correct where condition
+            orderBy: { createdAt: "desc" },
+        });
+
+        res.json(tenants); // Use the correct variable name
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching tenants", error });
+    }
+});

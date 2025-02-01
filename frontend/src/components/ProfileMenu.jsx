@@ -1,4 +1,4 @@
-import React, { Suspense } from "react"
+import React from "react"
 import { Avatar, Menu } from "@mantine/core"
 import { useNavigate } from 'react-router-dom'
 
@@ -17,9 +17,6 @@ const ProfileMenu = ({ user, logout }) => {
                 <Menu.Label>Application</Menu.Label>
                 <Menu.Item onClick={() => navigate("./profile", { replace: true })}>
                     Profile
-                </Menu.Item>
-                <Menu.Item onClick={() => navigate("./", { replace: true })}>
-                    Booking
                 </Menu.Item>
                 <Menu.Item onClick={() => {
                     localStorage.clear()

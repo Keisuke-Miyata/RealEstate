@@ -44,3 +44,22 @@ export const getItem = asyncHandler(async (req, res) => {
         throw new Error(err.message)
     }
 })
+
+export const getAllUserItems = asyncHandler(async (req, res) => {
+    const { email } = req.query; // Extract email correctly
+
+    try {
+        if (!email) {
+            return res.status(400).json({ message: "Email query parameter is required" });
+        }
+
+        const items = await prisma.item.findMany({
+            where: { owner: { email } }, // Correct where condition
+            orderBy: { createdAt: "desc" },
+        });
+
+        res.json(items); // Use the correct variable name
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching items", error });
+    }
+});

@@ -1,18 +1,19 @@
 import React from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaBed, FaShower, FaHouseUser } from "react-icons/fa";
 
 
 const Item = ({ property }) => {
 
-    const navigate = useNavigate()
+    const dateOnly = property.dateAvailability.split("T")[0];
 
     return (
-        <div
-            key={property.id}
-            className="p-4 bg-white shadow-md rounded-md flex flex-col h-full w-[300px]"
-        >
-            <Link to={`/place/${property.id}`}>
+        <Link to={`/place/${property.id}`}>
+            <div
+                key={property.id}
+                className="card-border"
+            >
+
                 <img
                     src={property.image[0]}
                     alt="Listing"
@@ -35,9 +36,10 @@ const Item = ({ property }) => {
                     </li>
                     <li>{property.type} in Flatshare</li>
                 </ul>
-                <div className="text-sm text-gray-500">Available from {property.dateAvailability}</div>
-            </Link>
-        </div>
+                <div className="text-sm text-gray-500">Available from {dateOnly}</div>
+
+            </div>
+        </Link>
     )
 }
 

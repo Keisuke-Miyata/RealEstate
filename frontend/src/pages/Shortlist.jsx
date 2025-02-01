@@ -10,13 +10,10 @@ const Shortlist = () => {
     const { favorites, favoriteItems } = useSharecontext();
 
     return (
-        <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center">
+        <section className="max-w-[1440px] mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-28">
                 {favoriteItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className="bg-white shadow-md rounded-md flex flex-col h-full w-[300px]"
-                    >
+                    <div key={item.id}>
                         {item.category === "place" && <Item key={item.id} property={item} />}
                         {item.category === "seeker" && <TenantItem key={item.id} tenant={item} />}
                         {item.category === "items" && <SellItem key={item.id} item={item} />}

@@ -67,24 +67,24 @@ export const getResidency = asyncHandler(async (req, res) => {
         res.send(residency)
     } catch (err) {
         throw new Error(err.message)
-
     }
 })
 
-// export const getAllUserProperties = asyncHandler(async (req, res) => {
-//     const email = req.query;
+export const getAllUserProperties = asyncHandler(async (req, res) => {
+    const { email } = req.query; // Extract email correctly
 
-//     try {
-//         const whereClause = userEmail ? { userEmail: email } : {};
+    try {
+        if (!email) {
+            return res.status(400).json({ message: "Email query parameter is required" });
+        }
 
-//         const properties = await prisma.residency.findMany({
-//             where: whereClause,
-//             orderBy: {
-//                 createdAt: "desc",
-//             },
-//         });
-//         res.json(residencies)
-//     } catch (error) {
-//         res.status(500).json({ message: "Error fetching properties", error});
-//     }
-// })
+        const properties = await prisma.residency.findMany({
+            where: { owner: { email } }, // Correct where condition
+            orderBy: { createdAt: "desc" },
+        });
+
+        res.json(properties); // Use the correct variable name
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching properties", error });
+    }
+});

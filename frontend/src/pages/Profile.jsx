@@ -13,7 +13,12 @@ const Profile = () => {
     const { user, logout, getAccessTokenSilently } = useAuth0()
     const { token } = useContext(UserDetailContext)
     const [favorites, setFavorites] = useState([])
-    
+
+    useEffect(() => {
+        console.log(user);  // Log the user object
+      }, [user]);
+      
+
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
@@ -36,7 +41,7 @@ const Profile = () => {
 
 
     return (
-        <div className="m-24">
+        <div className="card-detail">
             {/* User Information Section */}
             <div>
                 <div className="flex justify-between items-center mb-4">

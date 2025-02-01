@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom'
 
 const SellItem = ({ item }) => {
 
+    const dateOnly = item.createdAt.split("T")[0];
+
     return (
-        <div
-            key={item.id}
-            className="p-4 bg-white shadow-md rounded-md flex flex-col h-full w-[300px]"
-        >
-            <Link to={`/items/${item.id}`}>
+        <Link to={`/items/${item.id}`}>
+            <div
+                key={item.id}
+                className="card-border"
+            >
+
                 <img
                     src={item.image[0]}
                     alt="Listing"
@@ -19,9 +22,10 @@ const SellItem = ({ item }) => {
                 </div>
                 <div className="text-gray-700">{item.address}</div>
                 <div>{item.description}</div>
-                {/* <div className="text-sm text-gray-500">Posted: {item.date}</div> */}
-            </Link>
-        </div>
+                <div>Posted at {dateOnly}</div>
+
+            </div>
+        </Link>
     )
 }
 

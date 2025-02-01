@@ -15,7 +15,7 @@ const Place = () => {
     }
     if (isLoading) {
         return (
-            <div>
+            <div className="puffloader">
                 <PuffLoader
                     height="80"
                     width="80"
@@ -30,7 +30,7 @@ const Place = () => {
     return (
         <main>
             <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-32 mb-10">
                     {data.map((property) =>
                         <Item key={property.title} property={property} />
                         )}

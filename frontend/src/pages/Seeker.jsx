@@ -24,7 +24,7 @@ const Seeker = () => {
 
     if(isLoading){
         return (
-            <div className="h-64 flexCenter">
+            <div className="puffloader">
                 <PuffLoader
                     height="80"
                     width="80"
@@ -41,7 +41,7 @@ const Seeker = () => {
     }
 
     return (
-        <div className="m-16">
+        <div className="card-detail">
             <ImageCarousel images={data.image} />
             <SeekerDetails post={data} />
         </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-// import {listData} from "../lib/data"
 import { useParams } from "react-router-dom"
 import ImageCarousel from "../components/ImageCarousel"
 import { PuffLoader } from "react-spinners";
@@ -23,7 +22,7 @@ const ItemDetail = () => {
 
     if (isLoading) {
         return (
-            <div className="h-64 flexCenter">
+            <div className="puffloader">
                 <PuffLoader
                     height="80"
                     width="80"
@@ -38,17 +37,17 @@ const ItemDetail = () => {
     if (isError) {
         return (
             <div>
-                <span>Error while fetching property details</span>
+                <span>Error while fetching item details</span>
             </div>
         );
     }
 
     if (!post) {
-        return <div>Place not found</div>;
+        return <div>Item not found</div>;
     }
 
     return (
-        <div className="m-16 md:ml-28 md:mr-28 lg:ml-48 lg:mr-48 xl:ml-96 xl:mr-96">
+        <div className="card-detail">
             <h1>{post.type}</h1>
             <ImageCarousel images={post.image} />
             <ItemFeatureDetail post={post}/>

@@ -1,13 +1,14 @@
 import React from "react"
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const TenantItem = ({ tenant }) => {
     return (
-        <div
-            key={tenant.id}
-            className="p-4 bg-white shadow-md rounded-md flex flex-col h-full w-[300px]"
-        >
-            <Link to={`/seeker/${tenant.id}`}>
+        <Link to={`/seeker/${tenant.id}`}>
+            <div
+                key={tenant.id}
+                className="card-border"
+            >
+
                 <div className="flex items-center gap-4">
                     <img
                         src={tenant.image[0]}
@@ -28,8 +29,9 @@ const TenantItem = ({ tenant }) => {
                         <li key={index}>- {detail}</li>
                     ))}
                 </ul>
-            </Link>
-        </div>
+
+            </div>
+        </Link>
     )
 }
 
