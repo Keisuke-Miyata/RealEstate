@@ -191,18 +191,53 @@ export const createItem = async (data, token, userEmail) => {
     }
 }
 
-// export const getUserProperty = async (userEmail) => {
-//     try {
-//         const response = await api.get(`/property/allUserProperties`, {
-//             params: { userEmail },
-//             timeout: 10 * 1000,
-//         });
+export const getUserProperty = async (email) => {
+    try {
+        const response = await api.get(`/property/allUserProperties`, {
+            params: { email },
+            timeout: 10 * 1000,
+        });
 
-//         if (response.status === 400 || response.status === 500){
-//             throw response.data
-//         }
-//         return response.data;
-//     } catch (error) {
-//         throw error
-//     }
-// }
+        if (response.status === 400 || response.status === 500){
+            throw new Error(response.data.message)
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user's properties:", error)
+        throw error
+    }
+}
+
+export const getUserTenant = async (email) => {
+    try {
+        const response = await api.get(`/tenant/allUserTenants`, {
+            params: { email },
+            timeout: 10 * 1000,
+        });
+
+        if (response.status === 400 || response.status === 500){
+            throw new Error(response.data.message)
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user's properties:", error)
+        throw error
+    }
+}
+
+export const getUserItem = async (email) => {
+    try {
+        const response = await api.get(`/item/allUserItems`, {
+            params: { email },
+            timeout: 10 * 1000,
+        });
+
+        if (response.status === 400 || response.status === 500){
+            throw new Error(response.data.message)
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user's properties:", error)
+        throw error
+    }
+}

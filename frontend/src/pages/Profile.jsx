@@ -86,7 +86,7 @@ const Profile = () => {
                     </Link>
                 </div>
                 <hr className="mb-4 border-black"  />
-                {/* <ProfileMyList /> */}
+                <ProfileMyList userEmail={user?.email}/>
                 {/* Uncomment below for Suspense List */}
                 {/* <Suspense fallback={<p>Loading...</p>}>
                     <Await
