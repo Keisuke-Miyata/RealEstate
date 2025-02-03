@@ -9,8 +9,6 @@ export const useSharecontext = () => useContext(SharedContext);
 export const ShareProvider = ({ children }) => {
     const LocalStorageKey = "userFavorites";
     const [favoriteItems, setFavoriteItems] = useState([]);
-    // const { user } = useAuth0();
-    // const [userResidencies, setUserResidencies] = useState([]);
 
 
     const [favorites, setFavorites] = useState(()=> {
@@ -82,20 +80,6 @@ export const ShareProvider = ({ children }) => {
         }
     }, [favorites]);
 
-    // useEffect(() => {
-    //     const fetchResidencies = async () => {
-    //         if (!user?.email) return;
-
-    //         try {
-    //             const residencies = await getUserProperty(user.email);
-    //             setUserResidencies(residencies);
-    //         } catch (error) {
-    //             console.error("Error fetching user residencies:", error);
-    //         }
-    //     };
-
-    //     fetchResidencies();
-    // }, [user]);
 
     return (
         <SharedContext.Provider

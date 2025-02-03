@@ -14,7 +14,7 @@ const Tenants = () => {
     }
     if (isLoading) {
         return (
-            <div>
+            <div className="puffloader">
                 <PuffLoader
                     height="80"
                     width="80"

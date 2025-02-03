@@ -33,9 +33,9 @@ export const getProperty = async (id) => {
     }
 }
 
-export const createUser = async (email, token) => {
+export const createUser = async (email, name, token) => {
     try {
-        await api.post(`/user/register`, { email },
+        await api.post(`/user/register`, { email, name },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -44,6 +44,22 @@ export const createUser = async (email, token) => {
         )
     } catch (error) {
         throw error
+    }
+}
+
+export const getUser = async (email, token) => {
+    try {
+        const res = await api.get(`/user/${email}`, {email},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return res.data || null;
+    } catch (error){
+        console.error("Error fetching user:", error)
+        return null
     }
 }
 
@@ -131,7 +147,6 @@ export const getAllTenants = async () => {
 }
 
 export const getTenant = async (id) => {
-    // console.log(`Fetching tenant with ID: ${id}`);
     try {
         const response = await api.get(`/tenant/${id}`, {
             timeout: 10 * 1000,
@@ -241,3 +256,48 @@ export const getUserItem = async (email) => {
         throw error
     }
 }
+
+// 🏠 Delete Residency
+export const deleteResidency = async (id) => {
+    try {
+        const response = await api.delete(`/property/delete/${id}`, { timeout: 10 * 1000 });
+
+        if (response.status === 400 || response.status === 500) {
+            throw new Error(response.data.message);
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting residency:", error);
+        throw error;
+    }
+};
+
+// 🏢 Delete Tenant
+export const deleteTenant = async (id) => {
+    try {
+        const response = await api.delete(`/tenant/delete/${id}`, { timeout: 10 * 1000 });
+
+        if (response.status === 400 || response.status === 500) {
+            throw new Error(response.data.message);
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting tenant:", error);
+        throw error;
+    }
+};
+
+// 🏷️ Delete Item
+export const deleteItem = async (id) => {
+    try {
+        const response = await api.delete(`/item/delete/${id}`, { timeout: 10 * 1000 });
+
+        if (response.status === 400 || response.status === 500) {
+            throw new Error(response.data.message);
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting item:", error);
+        throw error;
+    }
+};

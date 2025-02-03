@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext"
 import { useMutation } from "react-query"
-import {createUser} from "../utils/api"
+import {createUser, getUser} from "../utils/api"
 
 
 const Layout = () => {
@@ -15,25 +15,42 @@ const Layout = () => {
     const {setUserDetails} = useContext(UserDetailContext)
     const {mutate} = useMutation({
         mutationKey: [user?.email],
-        mutationFn: (token)=> createUser(user?.email, token)
+        mutationFn: async (token)=> {
+
+            const existingUser = await getUser(user?.email, token);
+            console.log(`existingUser${existingUser}`)
+            if (!existingUser){
+                return createUser(user?.email, user?.username || user?.name, token)
+            }
+        }
     })
 
     useEffect(()=> {
         const getTokenAndRegister = async () => {
-            const res = await getAccessTokenWithPopup({
+            if (!user) return;
+
+            const token = await getAccessTokenWithPopup({
                 authorizationParams: {
                     audience: "http://localhost:3000",
-                    scope: "openid profile email"
+                    scope: "openid profile email name picture username"
                 }
             })
-        
-        localStorage.setItem("access_token", res)
-        setUserDetails((prev) => ({...prev, token: res}))
-        mutate(res)
+            console.log(token)
+
+        localStorage.setItem("access_token", token)
+        setUserDetails((prev) => ({...prev, token}))
+        mutate(token)
     }
         isAuthenticated && getTokenAndRegister()
-    
+
 }, [isAuthenticated])
+
+useEffect(() => {
+    if (user) {
+        console.log("Auth0 User Object:", user);
+    }
+}, [user]);
+
 
     return (
         <div>

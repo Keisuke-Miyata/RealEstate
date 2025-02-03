@@ -5,10 +5,14 @@ import asyncHandler from "express-async-handler"
 export const createUser = asyncHandler(async (req, res) => {
     console.log("creating a user")
 
-    let { email } = req.body
+    let { email, name } = req.body
     const userExists = await prisma.user.findUnique({ where: { email } })
     if (!userExists) {
-        const user = await prisma.user.create({ data: req.body })
+        const user = await prisma.user.create({ data: {
+            email: email,
+            name: name || "",
+        },
+    })
         res.send({
             message: "User registered successfully",
             user: user,
@@ -16,6 +20,22 @@ export const createUser = asyncHandler(async (req, res) => {
     }
     else res.status(201).send({ message: "User already registered" })
 })
+
+export const getUser = asyncHandler(async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+});
 
 // Adding a property to the list of the user's favorites
 export const toFav = asyncHandler(async (req, res) => {

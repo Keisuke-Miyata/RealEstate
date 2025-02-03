@@ -85,3 +85,21 @@ export const getAllUserTenant = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Error fetching tenants", error });
     }
 });
+
+export const deleteTenant = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const existingTenant = await prisma.tenant.findUnique({ where: { id } });
+
+        if (!existingTenant) {
+            return res.status(404).json({ message: "Tenant not found" });
+        }
+
+        await prisma.tenant.delete({ where: { id } });
+
+        res.json({ message: "Tenant deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Error deleting tenant", error: err.message });
+    }
+});

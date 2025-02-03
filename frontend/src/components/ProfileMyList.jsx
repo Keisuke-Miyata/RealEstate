@@ -1,70 +1,9 @@
-// import { useEffect, useState } from "react";
-// import { getUserProperty, getUserTenant, getUserItem } from "../utils/api";
-// import Item from "./Item";
-// import TenantItem from "./TenantItem";
-// import SellItem from "./SellItem";
-
-// const UserItemsList = ({ userEmail }) => {
-//     const [properties, setProperties] = useState([]);
-//     const [tenants, setTenants] = useState([]);
-//     const [items, setItems] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState(null);
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const [propertyData, tenantData, itemData] = await Promise.all([
-//                     getUserProperty(userEmail),
-//                     getUserTenant(userEmail),
-//                     getUserItem(userEmail),
-//                 ]);
-
-//                 setProperties(propertyData);
-//                 setTenants(tenantData);
-//                 setItems(itemData);
-//             } catch (err) {
-//                 setError(err.message);
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         if (userEmail) {
-//             fetchData();
-//         }
-//     }, [userEmail]);
-
-//     if (loading) return <p>Loading...</p>;
-//     if (error) return <p className="text-red-500">Error: {error}</p>;
-
-//     return (
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-//             {/* Properties */}
-//             {properties.map((property) => (
-//                 <Item key={property.title} property={property} />
-//             ))}
-
-//             {/* Tenants */}
-//             {tenants.map((tenant) => (
-//                 <TenantItem key={tenant.title} tenant={tenant} />
-//             ))}
-
-//             {/* Items */}
-//             {items.map((item) => (
-//                 <SellItem key={item.title} item={item} />
-//             ))}
-//         </div>
-//     );
-// };
-
-// export default UserItemsList;
-
 import React, { useEffect, useState, useRef } from "react";
-import { getUserProperty, getUserTenant, getUserItem } from "../utils/api";
+import { getUserProperty, getUserTenant, getUserItem, deleteResidency, deleteTenant, deleteItem } from "../utils/api";
 import Item from "./Item";
 import TenantItem from "./TenantItem";
 import SellItem from "./SellItem";
+import DeleteButton from "./DeleteButton"
 
 const UserItemsList = ({ userEmail }) => {
     const [properties, setProperties] = useState([]);
@@ -102,6 +41,26 @@ const UserItemsList = ({ userEmail }) => {
         }
     }, [userEmail]);
 
+    // Handle Deletion
+    const handleDelete = async (id, type) => {
+        try {
+            if (type === "property") {
+                await deleteResidency(id);
+                setProperties((prev) => prev.filter((property) => property.id !== id));
+            } else if (type === "tenant") {
+                await deleteTenant(id);
+                setTenants((prev) => prev.filter((tenant) => tenant.id !== id));
+            } else if (type === "item") {
+                await deleteItem(id);
+                setItems((prev) => prev.filter((item) => item.id !== id));
+            }
+            alert(`${type} deleted successfully`);
+        } catch (error) {
+            alert(`Failed to delete ${type}: ${error.message}`);
+        }
+    };
+
+    // Dragging functionality
     const handleMouseDown = (e) => {
         isDown.current = true;
         startX.current = e.pageX - scrollRef.current.offsetLeft;
@@ -136,21 +95,60 @@ const UserItemsList = ({ userEmail }) => {
             <div className="flex snap-x snap-mandatory gap-14 border border-gray-300 rounded-md" style={{ width: "max-content" }}>
                 {/* Properties */}
                 {properties.map((property) => (
-                    <div key={property.title} className="flex-none w-64 snap-center">
+                    <div key={property.id} className="flex-none w-64 snap-center relative">
+                        {/* <button
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-700"
+                            onClick={() => handleDelete(property.id, "property")}
+                        >
+                            <FaTrash size={14} />
+                        </button> */}
+                        <DeleteButton
+                            onDelete={deleteResidency}
+                            setState={setProperties}
+                            itemId={property.id}
+                            itemType="property"
+                        />
+
                         <Item property={property} />
                     </div>
                 ))}
-                
+
                 {/* Tenants */}
                 {tenants.map((tenant) => (
-                    <div key={tenant.title} className="flex-none w-64 snap-center">
+                    <div key={tenant.id} className="flex-none w-64 snap-center relative">
+                        {/* <button
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-700"
+                            onClick={() => handleDelete(tenant.id, "tenant")}
+                        >
+                            <FaTrash size={14} />
+                        </button> */}
+                        <DeleteButton
+                            onDelete={deleteTenant}
+                            setState={setTenants}
+                            itemId={tenant.id}
+                            itemType="tenant"
+                        />
+
                         <TenantItem tenant={tenant} />
                     </div>
                 ))}
-                
+
                 {/* Items */}
                 {items.map((item) => (
-                    <div key={item.title} className="flex-none w-64 snap-center">
+                    <div key={item.id} className="flex-none w-64 snap-center relative">
+                        {/* <button
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-700"
+                            onClick={() => handleDelete(item.id, "item")}
+                        >
+                            <FaTrash size={14} />
+                        </button> */}
+                        <DeleteButton
+                            onDelete={deleteItem}
+                            setState={setItems}
+                            itemId={item.id}
+                            itemType="item"
+                        />
+
                         <SellItem item={item} />
                     </div>
                 ))}

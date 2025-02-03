@@ -63,3 +63,21 @@ export const getAllUserItems = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Error fetching items", error });
     }
 });
+
+export const deleteItem = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const existingItem = await prisma.item.findUnique({ where: { id } });
+
+        if (!existingItem) {
+            return res.status(404).json({ message: "Item not found" });
+        }
+
+        await prisma.item.delete({ where: { id } });
+
+        res.json({ message: "Tenant deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Error deleting item", error: err.message });
+    }
+});
