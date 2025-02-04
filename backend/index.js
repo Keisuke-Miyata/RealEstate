@@ -33,13 +33,15 @@ var transporter = nodemailer.createTransport({
 })
 
 app.post('/send-message', (req, res) => {
-    const { email, message, subject } = req.body;
+    const { email, message, subject, selectedButton } = req.body;
+
+    const updatedMessage = `Category: ${selectedButton}\n\nMessage: ${message}`
 
     const mailOptions = {
         from: email,
         to: GMAIL_ADDRESS,
         subject: subject,
-        text: message
+        text: updatedMessage
     };
     console.log(email, message, subject)
     transporter.sendMail(mailOptions, (error, info) => {

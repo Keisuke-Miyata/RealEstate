@@ -5,17 +5,16 @@ import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext";
-import { useMutation, useQuery } from "react-query"
+import { useQuery } from "react-query"
 import { updateTenant, getTenant } from "../utils/api";
 import { toast } from "react-toastify";
 import useTenant from "../hooks/useTenant";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios"
 
 const UpdateTenantPage = () => {
     const { id } = useParams();
     const [activeUploadStep, setActiveUploadStep] = useState(0);
-    const [preference, setPreference] = useState(""); // To track selected option
+    const [preference, setPreference] = useState("");
     const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]);
     const { user } = useAuth0();
 
@@ -34,15 +33,16 @@ const UpdateTenantPage = () => {
         partnerNationality: "",
         partnerFieldOfStudy: "",
         groupMembers: [],
-        monthlyBudget: null,
+        monthlyBudget: 0,
         preferredMoveDate: new Date(),
         maxFlatmates: "",
         parking: "",
         image: null,
         location: "",
         placeType: "",
-        age: null,
+        age: 10,
         details: [],
+        preference: "",
         userEmail: user?.email
     });
 
@@ -51,7 +51,7 @@ const UpdateTenantPage = () => {
 
     const { data: tenant, isLoading: tenantLoading } = useQuery(
         ["tenant", id],
-        () => getTenant(id), // API call to fetch tenant data
+        () => getTenant(id),
         {
             onSuccess: (data) => {
                 setFormData(data);
@@ -61,8 +61,6 @@ const UpdateTenantPage = () => {
                     ...data,
                     preferredMoveDate: data.preferredMoveDate ? new Date(data.preferredMoveDate) : new Date(),
                 });
-                console.log(data)
-
             }
         }
     );
@@ -87,17 +85,22 @@ const UpdateTenantPage = () => {
         }));
     };
 
+    const updateFormData = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            preference : preference,
+        }));
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setFormData((prevData) => ({
-            ...prevData,
-            details: preference, // Add selected checkboxes to details
-        }));
+        updateFormData();
 
         // Prepare data for submission
         const dataToSubmit = {
             ...formData,
+            preference: preference,
             groupMembers: groupMembers.map((member) => ({
                 name: member.name || "",
                 nationality: member.nationality || "",
@@ -106,7 +109,6 @@ const UpdateTenantPage = () => {
         };
 
         try {
-            // updateTenant(id, dataToSubmit, token)
             const response = updateTenant(id, dataToSubmit, token)
             console.log("Tenant data submitted successfully:", response.data);
             toast.success("Added successfully", { position: "bottom-right" })
@@ -130,7 +132,7 @@ const UpdateTenantPage = () => {
 
     return (
         <div className='mt-40 ml-[30%] mr-[28%]'>
-            <form onSubmit={handleSubmit}>
+            <form>
                 <Select
                     label="What type of place are you looking for"
                     placeholder=""
@@ -182,14 +184,14 @@ const UpdateTenantPage = () => {
                     <h3 className="text-lg font-semibold mb-2">Who are you applying with?</h3>
                     <div className="flex gap-4 justify-center mt-10">
                         {["Me", "Couple", "Group"].map((item) => (
-                            <button
+                            <div
                                 key={item}
                                 className={`w-20 h-20 rounded-full border-2 flex items-center justify-center ${preference === item ? "bg-blue-500 text-white border-blue-500" : "border-gray-300"
                                     }`}
                                 onClick={() => setPreference(item)}
                             >
                                 {item}
-                            </button>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -221,6 +223,7 @@ const UpdateTenantPage = () => {
                         <PersonalForm
                             formData={formData}
                             handleInputChange={handleInputChange}
+                            setFormData={setFormData}
                         />
 
                         <h3 className="text-lg font-semibold">About Your Partner</h3>
@@ -268,7 +271,7 @@ const UpdateTenantPage = () => {
                 {preference === "Group" && (
                     <div className="space-y-6">
                         <h3 className="text-lg font-semibold mb-4">Your Personal Details</h3>
-                        <PersonalForm formData={formData} handleInputChange={handleInputChange} />
+                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData} />
                         {groupMembers.map((member, index) => (
                             <div key={member.id} className="border p-4 rounded-lg relative">
                                 <h3 className="text-lg font-semibold mb-2">Friend {index + 1}</h3>
@@ -340,7 +343,8 @@ const UpdateTenantPage = () => {
                         setFormData((prevData) => ({
                             ...prevData,
                             details: selectedDetails,
-                        }))}
+                        }))
+                        }
                 >
                     <Group mt="xl">
                         <Checkbox value="Furnished room required" label="Furnish" />
@@ -367,9 +371,6 @@ const UpdateTenantPage = () => {
                     >
                         Submit
                     </Button>
-                    {/* <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
-                        Submit
-                    </Button> */}
                 </div>
             </form>
         </div>

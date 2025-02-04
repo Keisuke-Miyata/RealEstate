@@ -43,11 +43,11 @@ const Profile = () => {
             <div>
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl font-bold">User Information</h1>
-                    <Link to="/profile/update">
+                    {/* <Link to="/profile/update">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
                             Update Profile
                         </button>
-                    </Link>
+                    </Link> */}
                 </div>
                 <hr className="mb-4 border-black" />
                 {/* User Details */}

@@ -109,7 +109,7 @@ export const deleteResidency = asyncHandler(async (req, res) => {
 
 export const updateProperty = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const updateData = req.body;
+    const { id: _, ...updateData } = req.body;
 
     try {
         const residency = await prisma.residency.findUnique({ where: { id } });

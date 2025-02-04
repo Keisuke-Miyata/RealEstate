@@ -4,7 +4,7 @@ const DeleteButton = ({ onDelete, setState, itemId, itemType }) => {
     const handleClick = async () => {
         if (window.confirm(`Are you sure you want to delete this ${itemType}?`)) {
             try {
-                await onDelete(itemId);
+                await onDelete(itemId, itemType);
                 setState((prev) => prev.filter((item) => item.id !== itemId));
             } catch (error) {
                 alert(`Failed to delete ${itemType}: ${error.message}`);

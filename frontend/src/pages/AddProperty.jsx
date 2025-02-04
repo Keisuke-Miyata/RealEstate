@@ -295,23 +295,24 @@ function AddProperty() {
                 </Stepper.Step>
                 <Stepper.Step label="Final step" description="Preview">
                     <PreviewProperty propertyDetails={propertyDetails} />
-                    <Group justify="center" className='mt-10'>
-                        <Button
-                            onClick={() => mutate()}
-                            loading={isLoading}
-                        >
-                            Submit
-                        </Button>
-                    </Group>
                 </Stepper.Step>
                 <Stepper.Completed>
                     Completed, click back button to get to previous step
                 </Stepper.Completed>
             </Stepper>
 
-            <Group justify="center" className='mb-10 mt-20'>
-                <Button variant="default" onClick={prevStep}>Back</Button>
-                <Button onClick={nextStep}>Next step</Button>
+            <Group justify="center" className="mb-10 mt-20">
+                {active > 0 && ( // Hide "Back" on the first step
+                    <Button variant="default" onClick={prevStep}>Back</Button>
+                )}
+
+                {active < 2 ? ( // Hide "Next step" on the last step
+                    <Button onClick={nextStep}>Next step</Button>
+                ) : (
+                    <Button onClick={() => mutate()} loading={isLoading}>
+                        Submit
+                    </Button>
+                )}
             </Group>
         </div>
     );

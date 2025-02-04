@@ -1,18 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Select, TextInput, NumberInput, Button, Checkbox, Group } from "@mantine/core";
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext";
-import { useMutation } from "react-query"
 import { createTenant } from "../utils/api";
 import { toast } from "react-toastify";
 import useTenant from "../hooks/useTenant";
 
 const AddTenant = () => {
-    const [preference, setPreference] = useState(""); // To track selected option
-    const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]); // Group members state
+    const [preference, setPreference] = useState("");
+    const [groupMembers, setGroupMembers] = useState([{id: Date.now()}]);
     const [activeUploadStep, setActiveUploadStep] = useState(0);
     const { user } = useAuth0()
 
@@ -28,15 +27,16 @@ const AddTenant = () => {
         partnerNationality: "",
         partnerFieldOfStudy: "",
         groupMembers: [],
-        monthlyBudget: null,
+        monthlyBudget: 0,
         preferredMoveDate: new Date(),
         maxFlatmates: "",
         parking: "",
-        image: null,
+        image: [],
         location: "",
         placeType: "",
-        age: null,
+        age: 0,
         details: [],
+        preference: "",
         userEmail: user?.email
     });
 
@@ -63,70 +63,28 @@ const AddTenant = () => {
     const {
         userDetails: { token }
     } = useContext(UserDetailContext)
-    const { refetch: refetchTenant } = useTenant()
 
-    const { mutate, isLoading } = useMutation({
-        mutationFn: () =>
-            createTenant(
-                formData,
-                token,
-                user?.email
-            ),
-        onError: ({ response }) =>
-            toast.error(response.data.message, { position: "bottom-right" }),
-        onSettled: () => {
-            toast.success("Added successfully", { position: "bottom-right" })
-            setFormData({
-                name: "",
-                nationality: "",
-                fieldOfStudy: "",
-                gender: "",
-                introduction: "",
-                partnerName: "",
-                partnerGender: "",
-                partnerNationality: "",
-                partnerFieldOfStudy: "",
-                groupMembers: [],
-                monthlyBudget: null,
-                preferredMoveDate: new Date(),
-                maxFlatmates: "",
-                parking: "",
-                image: null,
-                location: "",
-                placeType: "",
-                age: null,
-                details: [],
-                userEmail: user?.email
-            })
-            refetchTenant()
-            // setTimeout(()=> {
-            //     window.location.href = "/";
-            // }, 3000)
-        }
-    })
+    const updateFormData = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            preference: preference,
+            groupMembers: groupMembers
+        }));
+    };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setFormData((prevData) => ({
-            ...prevData,
-            details: preference, // Add selected checkboxes to details
-        }));
-
-        // Prepare data for submission
+        updateFormData()
         const dataToSubmit = {
             ...formData,
-            groupMembers: groupMembers.map((member) => ({
-                name: member.name || "",
-                nationality: member.nationality || "",
-                gender: member.gender || "",
-            })),
+            preference: preference,
+            groupMembers: groupMembers
         };
-        console.log(dataToSubmit)
+
+
         try {
-            // Make an API request to save data (replace the URL with your backend endpoint)
-            const response = await axios.post("/api/tenant/createTenant", dataToSubmit);
+            const response = createTenant(dataToSubmit, token, user?.email)
             console.log("Tenant data submitted successfully:", response.data);
         } catch (error) {
             console.error("Error submitting tenant data:", error);
@@ -192,14 +150,14 @@ const AddTenant = () => {
                     <h3 className="text-lg font-semibold mb-2">Who are you applying with?</h3>
                     <div className="flex gap-4 justify-center mt-10">
                         {["Me", "Couple", "Group"].map((item) => (
-                            <button
+                            <div
                                 key={item}
                                 className={`w-20 h-20 rounded-full border-2 flex items-center justify-center ${preference === item ? "bg-blue-500 text-white border-blue-500" : "border-gray-300"
                                     }`}
                                 onClick={() => setPreference(item)}
                             >
                                 {item}
-                            </button>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -225,17 +183,12 @@ const AddTenant = () => {
 
                 )}
 
-                {/* value={propertyDetails.address}
-                        onChange={(e) =>
-                            setPropertyDetails((prev) => ({ ...prev, address: e.target.value }))
-                        } */}
-
-
                 {preference === "Couple" && (
                     <div className="space-y-4">
                         <PersonalForm
                             formData={formData}
                             handleInputChange={handleInputChange}
+                            setFormData={setFormData}
                         />
 
                         <h3 className="text-lg font-semibold">About Your Partner</h3>
@@ -283,7 +236,7 @@ const AddTenant = () => {
                 {preference === "Group" && (
                     <div className="space-y-6">
                         <h3 className="text-lg font-semibold mb-4">Your Personal Details</h3>
-                        <PersonalForm formData={formData} handleInputChange={handleInputChange} />
+                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData}/>
                         {groupMembers.map((member, index) => (
                             <div key={member.id} className="border p-4 rounded-lg relative">
                                 <h3 className="text-lg font-semibold mb-2">Friend {index + 1}</h3>
@@ -293,8 +246,8 @@ const AddTenant = () => {
                                     className="mb-2"
                                     value={member.name}
                                     onChange={(e) =>
-                                        setGroupMembers(
-                                            groupMembers.map((m) =>
+                                        setGroupMembers((item) =>
+                                            item.map((m) =>
                                                 m.id === member.id ? { ...m, name: e.target.value } : m
                                             )
                                         )
@@ -306,8 +259,8 @@ const AddTenant = () => {
                                     className="mb-2"
                                     value={member.nationality}
                                     onChange={(e) =>
-                                        setGroupMembers(
-                                            groupMembers.map((m) =>
+                                        setGroupMembers((prev)=>
+                                            prev.map((m) =>
                                                 m.id === member.id ? { ...m, nationality: e.target.value } : m
                                             )
                                         )
@@ -318,8 +271,8 @@ const AddTenant = () => {
                                     placeholder="Enter your friend's gender"
                                     value={member.gender}
                                     onChange={(e) =>
-                                        setGroupMembers(
-                                            groupMembers.map((m) =>
+                                        setGroupMembers((prev)=>
+                                            prev.map((m) =>
                                                 m.id === member.id ? { ...m, gender: e.target.value } : m
                                             )
                                         )
@@ -346,7 +299,7 @@ const AddTenant = () => {
                     </div>
                 )}
 
-                {/* Detais */}
+                {/* Details */}
                 <Checkbox.Group
                     defaultValue={["Furnished room required"]}
                     label="Select your preference"
@@ -377,15 +330,9 @@ const AddTenant = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center mt-20 mb-10">
-                        <Button
-                            onClick={() => mutate()}
-                            loading={isLoading}
-                        >
+                        <Button type="submit">
                             Submit
                         </Button>
-                    {/* <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
-                        Submit
-                    </Button> */}
                 </div>
             </form>
         </div>

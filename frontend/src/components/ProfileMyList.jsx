@@ -125,7 +125,7 @@ const UserItemsList = ({ userEmail }) => {
                         />
 
                         <DeleteButton
-                            onDelete={deleteResidency}
+                            onDelete={handleDelete}
                             setState={setProperties}
                             itemId={property.id}
                             itemType="property"
@@ -151,7 +151,7 @@ const UserItemsList = ({ userEmail }) => {
                         />
 
                         <DeleteButton
-                            onDelete={deleteTenant}
+                            onDelete={handleDelete}
                             setState={setTenants}
                             itemId={tenant.id}
                             itemType="tenant"

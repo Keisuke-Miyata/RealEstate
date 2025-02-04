@@ -3,11 +3,11 @@ import { createResidency, getAllResidencies, getResidency, getAllUserProperties,
 import jwtCheck from "../config/auth0Config.js"
 
 const router = express.Router()
-router.post("/createProperty", jwtCheck, createResidency)
+router.post("/createProperty", createResidency)
 router.get("/allProperties",getAllResidencies)
 router.get("/allUserProperties", getAllUserProperties)
 router.put("/update/:id", updateProperty)
-router.delete('/delete/:id', jwtCheck, deleteResidency)
+router.delete('/delete/:id', deleteResidency)
 router.get("/:id", getResidency)
 
 

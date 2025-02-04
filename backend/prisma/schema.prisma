@@ -79,7 +79,8 @@ model Tenant {
     createdAt         DateTime @default(now())
     updatedAt         DateTime @updatedAt
 
-    details String[]
+    details    String[]
+    preference String
 
     @@unique(fields: [userEmail])
 }
