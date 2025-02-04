@@ -1,5 +1,5 @@
 import express from "express"
-import { createTenant, getAllTenants, getTenant, getAllUserTenant, deleteTenant } from "../controllers/tenantController.js"
+import { createTenant, getAllTenants, getTenant, getAllUserTenant, deleteTenant, updateTenant } from "../controllers/tenantController.js"
 import jwtCheck from "../config/auth0Config.js"
 
 const router = express.Router()
@@ -7,6 +7,7 @@ const router = express.Router()
 router.post("/createTenant", jwtCheck, createTenant)
 router.get("/allTenants", getAllTenants)
 router.get('/allUserTenants', getAllUserTenant)
+router.put("/update/:id", updateTenant)
 router.delete('/delete/:id', jwtCheck, deleteTenant)
 router.get("/:id", getTenant)
 

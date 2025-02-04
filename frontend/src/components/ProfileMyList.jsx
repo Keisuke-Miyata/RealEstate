@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getUserProperty, getUserTenant, getUserItem, deleteResidency, deleteTenant, deleteItem } from "../utils/api";
+import { getUserProperty, getUserTenant, getUserItem, deleteResidency, deleteTenant, deleteItem, updateTenant, updateProperty, updateItem } from "../utils/api";
 import Item from "./Item";
 import TenantItem from "./TenantItem";
 import SellItem from "./SellItem";
 import DeleteButton from "./DeleteButton"
+import UpdateButton from "./UpdateButton"
 
 const UserItemsList = ({ userEmail }) => {
     const [properties, setProperties] = useState([]);
@@ -59,6 +60,21 @@ const UserItemsList = ({ userEmail }) => {
             alert(`Failed to delete ${type}: ${error.message}`);
         }
     };
+    const handleUpdate = async (itemId, type) => {
+        console.log(`Updating item with ID: ${itemId}`);
+        try {
+            if (type === "property") {
+                await updateProperty(id);
+            } else if (type === "tenant") {
+                await updateTenant(id);
+            } else if (type === "item") {
+                await updateItem(id);
+            }
+            alert(`${type} updated successfully`);
+        } catch (error) {
+            alert(`Failed to update ${type}: ${error.message}`);
+        }
+    };
 
     // Dragging functionality
     const handleMouseDown = (e) => {
@@ -102,6 +118,12 @@ const UserItemsList = ({ userEmail }) => {
                         >
                             <FaTrash size={14} />
                         </button> */}
+                        <UpdateButton
+                            onUpdate={handleUpdate}
+                            itemId={property.id}
+                            itemType="property"
+                        />
+
                         <DeleteButton
                             onDelete={deleteResidency}
                             setState={setProperties}
@@ -122,6 +144,12 @@ const UserItemsList = ({ userEmail }) => {
                         >
                             <FaTrash size={14} />
                         </button> */}
+                        <UpdateButton
+                            onUpdate={handleUpdate}
+                            itemId={tenant.id}
+                            itemType="tenant"
+                        />
+
                         <DeleteButton
                             onDelete={deleteTenant}
                             setState={setTenants}
@@ -142,6 +170,12 @@ const UserItemsList = ({ userEmail }) => {
                         >
                             <FaTrash size={14} />
                         </button> */}
+                        <UpdateButton
+                            onUpdate={handleUpdate}
+                            itemId={item.id}
+                            itemType="item"
+                        />
+
                         <DeleteButton
                             onDelete={deleteItem}
                             setState={setItems}

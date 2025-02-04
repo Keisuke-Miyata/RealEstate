@@ -106,3 +106,25 @@ export const deleteResidency = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Error deleting residency", error: err.message });
     }
 });
+
+export const updateProperty = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+        const residency = await prisma.residency.findUnique({ where: { id } });
+
+        if (!residency) {
+            return res.status(404).json({ message: "Residency not found" });
+        }
+
+        const updatedResidency = await prisma.residency.update({
+            where: { id },
+            data: updateData
+        });
+
+        res.json(updatedResidency);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});

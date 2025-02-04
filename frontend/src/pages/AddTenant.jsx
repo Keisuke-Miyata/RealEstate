@@ -3,7 +3,6 @@ import { Select, TextInput, NumberInput, Button, Checkbox, Group } from "@mantin
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
-// import axios from "axios"; // Make sure you have axios installed for API calls
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext";
 import { useMutation } from "react-query"
@@ -127,7 +126,7 @@ const AddTenant = () => {
         console.log(dataToSubmit)
         try {
             // Make an API request to save data (replace the URL with your backend endpoint)
-            const response = await axios.post("/api/tenants", dataToSubmit);
+            const response = await axios.post("/api/tenant/createTenant", dataToSubmit);
             console.log("Tenant data submitted successfully:", response.data);
         } catch (error) {
             console.error("Error submitting tenant data:", error);

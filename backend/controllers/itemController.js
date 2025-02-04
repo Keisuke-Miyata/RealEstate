@@ -81,3 +81,33 @@ export const deleteItem = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Error deleting item", error: err.message });
     }
 });
+
+export const updateItem = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, condition, address, price, image, description } = req.body;
+
+    try {
+        const existingItem = await prisma.item.findUnique({ where: { id } });
+
+        if (!existingItem) {
+            return res.status(404).json({ message: "Item not found" });
+        }
+
+        const updatedItem = await prisma.item.update({
+            where: { id },
+            data: {
+                title,
+                condition,
+                address,
+                price,
+                image,
+                description,
+                updatedAt: new Date()
+            }
+        });
+
+        res.json(updatedItem);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});

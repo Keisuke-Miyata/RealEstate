@@ -1,5 +1,4 @@
 import axios from "axios"
-import { data } from "react-router-dom"
 
 export const api = axios.create({
     baseURL: "http://localhost:3000/api"
@@ -298,6 +297,59 @@ export const deleteItem = async (id) => {
         return response.data;
     } catch (error) {
         console.error("Error deleting item:", error);
+        throw error;
+    }
+};
+
+export const updateItem = async (id, updatedData, token) => {
+    try {
+        const response = await api.put(`/item/update/${id}`, updatedData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error updating item:", error);
+        throw error;
+    }
+};
+
+export const updateProperty = async (id, updatedData, token) => {
+    try {
+        const response = await api.put(`/property/update/${id}`, updatedData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error updating property:", error);
+        throw error;
+    }
+};
+
+// export const updateTenant = async (id, updatedData, token) => {
+//     try {
+//         const response = await api.put(`/tenant/update/${id}`, updatedData, {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+
+//         return response.data;
+//     } catch (error) {
+//         console.error("Error updating tenant:", error);
+//         throw error;
+//     }
+// };
+
+export const updateTenant = async (id, updatedData, token) => {
+    try {
+        const response = await api.put(`/tenant/update/${id}`, updatedData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("Server Response:", response);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating tenant:", error?.response?.data || error.message);
         throw error;
     }
 };

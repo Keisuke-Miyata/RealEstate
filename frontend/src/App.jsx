@@ -25,6 +25,9 @@ import AddItem from "./pages/AddItem"
 
 import { QueryClient, QueryClientProvider } from "react-query"
 import UserDetailContext from './context/UserDetailContext'
+import UpdateItemPage from './pages/UpdateItem'
+import UpdatePropertyPage from "./pages/UpdateProperty"
+import UpdateTenantPage from "./pages/UpdateTenant"
 
 const App = () => {
 
@@ -56,6 +59,10 @@ const App = () => {
                 <Route path="/shortlist" element={<Shortlist />} />
                 <Route path="/contact" element={<ContactForm />} />
                 <Route path="/item" element={<AddItem />} />
+                <Route path="/update/item/:id" element={<UpdateItemPage />} />
+                <Route path="/update/property/:id" element={<UpdatePropertyPage />} />
+                <Route path="/update/tenant/:id" element={<UpdateTenantPage />} />
+
               </Route>
 
             </Routes>
