@@ -78,7 +78,7 @@ const AddItem = () => {
             <Select
                 label="condition"
                 placeholder="Select"
-                data={["new", "nearly new", "old"]}
+                data={["New (Unopened)", "Like New / Mint Condition", "Good Condition", "Fair Condition", "Poor Condition"]}
                 className='mb-10'
                 onChange={handleSelectChange("condition")}
             />
@@ -114,7 +114,7 @@ const AddItem = () => {
                 details={itemDetails}
                 setDetails={setItemDetails}
             />
-            <Group justify="center" className='mt-10'>
+            <Group justify="center" className='mt-10 mb-10'>
                 <Button
                     onClick={() => mutate()}
                     loading={isLoading}

@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import house from "../assets/house.jpg";
+import useAuthCheck from "../hooks/useAuthCheck"
 
 const Hero = () => {
     const navigate = useNavigate();
+    const { validateLogin } = useAuthCheck();
+
 
     return (
         <section className="max-padd-container h-[500px] md:h-[400px]">
@@ -12,7 +15,7 @@ const Hero = () => {
                     {/* First Button */}
                     <div className="col-start-1 col-span-1 w-[340px]">
                         <button
-                            onClick={() => navigate("/tenant")}
+                            onClick={() => validateLogin() && navigate("/tenant")}
                             className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
                             <div className='m'>
                                 Offering a place to stay
@@ -27,7 +30,7 @@ const Hero = () => {
                     {/* Second Button */}
                     <div className="col-start-q col-span-1 w-[340px]">
                         <button
-                            onClick={() => navigate("/place")}
+                            onClick={() => validateLogin() && navigate("/place")}
                             className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
                             <div>
                                 Looking for a place to stay

@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { MdOutlineCloudUpload } from "react-icons/md";
+import { MdOutlineCloudUpload, MdDelete } from "react-icons/md";
 
 const UploadImage = ({ activeUploadStep, prevStep, nextStep, details, setDetails }) => {
     const [imageURL, setImageURL] = useState(null);
@@ -16,6 +16,15 @@ const UploadImage = ({ activeUploadStep, prevStep, nextStep, details, setDetails
         setImageURL(null); // Reset for the next image upload
         nextStep();
     };
+
+    const handleDelete = (index) => {
+        // Remove the image at the specified index
+        setDetails((prev) => ({
+            ...prev,
+            image: prev.image.filter((_, i) => i !== index),
+        }));
+    };
+
 
     // Initialize Cloudinary upload widget
     useEffect(() => {
@@ -61,12 +70,17 @@ const UploadImage = ({ activeUploadStep, prevStep, nextStep, details, setDetails
                     <h4>Uploaded Images:</h4>
                     <div className="grid grid-cols-3 gap-4">
                         {details.image.map((url, index) => (
-                            <img
-                                key={index}
-                                src={url}
-                                alt={`Uploaded ${index + 1}`}
-                                className="w-24 h-24 object-cover rounded-md"
-                            />
+                            <div key={index} className="relative">
+                                <img
+                                    src={url}
+                                    alt={`Uploaded ${index + 1}`}
+                                    className="w-24 h-24 object-cover rounded-md"
+                                />
+                                <button
+                                    onClick={() => handleDelete(index)}
+                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-md hover:bg-red-700 transition"
+                                ><MdDelete size={16} /></button>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -74,9 +88,8 @@ const UploadImage = ({ activeUploadStep, prevStep, nextStep, details, setDetails
 
             {/* Navigation buttons */}
             <Group justify="center" mt={"xl"}>
-                <Button onClick={prevStep}>Go Back</Button>
-                <Button onClick={handleNext} disabled={!imageURL}>
-                    {activeUploadStep < 2 ? "Next Image" : "Finish"}
+            <Button onClick={handleNext} disabled={!imageURL}>
+                    Save / Next
                 </Button>
             </Group>
         </div>

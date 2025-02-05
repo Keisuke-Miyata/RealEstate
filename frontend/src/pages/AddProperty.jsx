@@ -9,17 +9,24 @@ import UserDetailContext from '../context/UserDetailContext';
 import { useMutation } from 'react-query';
 import useProperties from '../hooks/useProperties';
 import { toast } from "react-toastify"
+import PhoneNumberForm from "../components/PhoneNumberForm"
+import { useNavigate } from "react-router-dom"
+
 
 function AddProperty() {
     const [active, setActive] = useState(0);
     const [activeUploadStep, setActiveUploadStep] = useState(0); // Separate state for UploadImage steps
     const { user } = useAuth0()
+    const navigate = useNavigate()
     const [propertyDetails, setPropertyDetails] = useState({
         title: "",
         accommodationType: "",
         type: "",
         address: "",
+        size: 0,
         room: 0,
+        bathroom: 0,
+        tenants: 0,
         rent: 0,
         parking: "",
         internet: "",
@@ -35,6 +42,7 @@ function AddProperty() {
         features: [],
         overview: [],
         facilities: {},
+        phoneNumber: "",
         userEmail: user?.email
     });
 
@@ -80,8 +88,11 @@ function AddProperty() {
                 accommodationType: "",
                 type: "",
                 address: "",
+                size: 0,
                 room: 0,
                 rent: 0,
+                bathroom: 0,
+                tenants: 0,
                 parking: "",
                 internet: "",
                 furnish: "",
@@ -96,12 +107,13 @@ function AddProperty() {
                 features: [],
                 overview: [],
                 facilities: {},
+                phoneNumber: "",
                 userEmail: user?.email
             })
             refetchProperties();
             setTimeout(() => {
-                window.location.href = "/";
-            }, 3000);
+                navigate("/");
+            }, 3000)
         }
     })
 
@@ -145,11 +157,32 @@ function AddProperty() {
                         }
                     />
                     <NumberInput
+                        label="Size of the property"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.size}
+                        onChange={handleSelectChange("size")}
+                    />
+                    <NumberInput
                         label="Total bedrooms"
                         placeholder="1"
                         className='mb-10'
                         value={propertyDetails.room}
                         onChange={handleSelectChange("room")}
+                    />
+                    <NumberInput
+                        label="Total bathrooms"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.bathroom}
+                        onChange={handleSelectChange("bathroom")}
+                    />
+                    <NumberInput
+                        label="Total tenants"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.tenants}
+                        onChange={handleSelectChange("tenants")}
                     />
                     <Select
                         label="Parking"
@@ -189,6 +222,10 @@ function AddProperty() {
                             <Checkbox value="Students" label="Students" />
                             <Checkbox value="LGBTQIA+" label="LGBTQIA+" />
                             <Checkbox value="40+ years" label="40+ years" />
+                            <Checkbox value="Family" label="Family" />
+                            <Checkbox value="Pet Owners" label="Pet Owners" />
+                            <Checkbox value="Remote Workers" label="Remote Workers" />
+                            <Checkbox value="Non-Smokers" label="Non-Smokers" />
                         </Group>
                     </Checkbox.Group>
 
@@ -205,11 +242,18 @@ function AddProperty() {
                         <Group mt="xl" mb="xl">
                             <Checkbox value="Off streent parking" label="Off streent parking" />
                             <Checkbox value="Internet included in rent" label="Internet icluded in rent" />
+                            <Checkbox value="Garage / Covered Parking" label="Garage / Covered Parking" />
+                            <Checkbox value="Public Transport Access" label="Public Transport Access" />
+                            <Checkbox value="CCTV / Security Cameras" label="CCTV / Security Cameras" />
+                            <Checkbox value="Utilities included" label="Utilities included" />
+                            <Checkbox value="Central Heating" label="Central Heating" />
+                            <Checkbox value="Air Conditining" label="Air Conditioning" />
                         </Group>
                     </Checkbox.Group>
 
                     <Checkbox.Group
                         defaultValue={['Queen bed']}
+                        className='mb-10'
                         label="Select your set up"
                         value={propertyDetails.overview}
                         onChange={(selectedDetails) =>
@@ -222,8 +266,16 @@ function AddProperty() {
                         <Group mt="xl" ml='xl'>
                             <Checkbox value="Queen bed" label="Queen bed" />
                             <Checkbox value="Drawers" label="Drawers" />
+                            <Checkbox value="Wardrobe" label="Wardrobe" />
                             <Checkbox value="Door lock" label="Door lock" />
                             <Checkbox value="Couch" label="Couch" />
+                            <Checkbox value="Nightstand / Bedside Table" label="Nightstand / Bedside Table" />
+                            <Checkbox value="Armchair" label="Armchair" />
+                            <Checkbox value="Bookshelf" label="Bookshelf" />
+                            <Checkbox value="TV / Entertainment" label="TV / Entertainment" />
+                            <Checkbox value="Room Lock" label="Room Lock" />
+                            <Checkbox value="Curtains" label="Curtains" />
+                            <Checkbox value="Carpet" label="Carpet" />
                         </Group>
                     </Checkbox.Group>
 
@@ -232,13 +284,15 @@ function AddProperty() {
                         label="Monthly rent"
                         onChange={handleSelectChange("rent")}
                     />
-                    <Radio
+                    <Checkbox
                         label="Bills included in rent"
-                        className='mb-10 mt-5'
+                        value={propertyDetails.billsIncluded}
+                        className='mb-10 mt-4'
                         onChange={(e) =>
                             setPropertyDetails((prev) => ({ ...prev, billsIncluded: e.target.checked }))
                         }
                     />
+                    
                     <NumberInput
                         label="Bond"
                         className='mb-10'
@@ -262,14 +316,14 @@ function AddProperty() {
                     <Select
                         label="Minimum length of stay"
                         placeholder='No minimum stay'
-                        data={["2 weeks", "one year"]}
+                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
                         className='mb-10'
                         onChange={handleSelectChange("min")}
                     />
                     <Select
                         label="Maximum length of stay"
                         placeholder='No minimum stay'
-                        data={["one month", "one year"]}
+                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
                         className='mb-10'
                         onChange={handleSelectChange("max")}
                     />
@@ -281,6 +335,10 @@ function AddProperty() {
                         onChange={(e) =>
                             setPropertyDetails((prev) => ({ ...prev, description: e.target.value }))
                         }
+                    />
+                    <PhoneNumberForm
+                        formData={propertyDetails}
+                        setFormData={setPropertyDetails}
                     />
 
                 </Stepper.Step>

@@ -7,6 +7,7 @@ const Item = ({ property }) => {
 
     const dateOnly = property.dateAvailability.split("T")[0];
 
+
     return (
         <Link to={`/place/${property.id}`}>
             <div

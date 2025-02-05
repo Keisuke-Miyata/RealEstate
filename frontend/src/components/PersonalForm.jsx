@@ -1,5 +1,6 @@
 import React from "react";
-import { TextInput, NumberInput } from "@mantine/core";
+import { TextInput, NumberInput, Select } from "@mantine/core";
+import PhoneNumberForm from "./PhoneNumberForm"
 
 const PersonalForm = ({ formData, handleInputChange, setFormData }) => {
     return (
@@ -31,12 +32,17 @@ const PersonalForm = ({ formData, handleInputChange, setFormData }) => {
                 value={formData.fieldOfStudy}
                 onChange={handleInputChange}
             />
-            <TextInput
+            <PhoneNumberForm
+                formData={formData}
+                setFormData={setFormData}
+            />
+            <Select
                 label="Gender you identify as"
-                placeholder="Enter your gender"
+                placeholder="Pick your choice"
                 name="gender"
+                data={["Male", "Female", "Non-Binary"]}
                 value={formData.gender}
-                onChange={handleInputChange}
+                onChange={(value)=> setFormData({...formData, gender: value})}
             />
         </div>
     );

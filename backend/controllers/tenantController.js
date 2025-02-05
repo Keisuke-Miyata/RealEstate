@@ -6,7 +6,7 @@ export const createTenant = asyncHandler(async (req, res) => {
     const { name, nationality, fieldOfStudy, gender, introduction,
         partnerName, partnerGender, partnerNationality, partnerFieldOfStudy,
         groupMembers, monthlyBudget, preferredMoveDate, maxFlatmates,
-        parking, image, location, placeType, age, details, preference, userEmail
+        parking, image, location, placeType, age, details, preference, max, phoneNumber, userEmail
     } = req.body.data || req.body
 
     console.log("created tenant component")
@@ -34,6 +34,8 @@ export const createTenant = asyncHandler(async (req, res) => {
                 age,
                 details,
                 preference,
+                max,
+                phoneNumber,
                 owner: { connect: { email: userEmail }}
             }
         })

@@ -4,11 +4,13 @@ import SellItem from "../components/SellItem"
 import useItems from "../hooks/useItems"
 import { useNavigate } from "react-router"
 import house from "../assets/house.jpg"
+import useAuthCheck from "../hooks/useAuthCheck"
 
 
 const Items = () => {
     let navigate = useNavigate()
     const { data, isError, isLoading } = useItems()
+    const { validateLogin } = useAuthCheck();
 
     if (isLoading) {
         return (
@@ -37,7 +39,7 @@ const Items = () => {
             <div className="flex justify-center items-center mt-32">
                 <div className="col-start-1 col-span-1 w-[340px] justify-items-center">
                     <button
-                        onClick={() => navigate("/item")}
+                        onClick={() => validateLogin() && navigate("/item")}
                         className="bg-red-200 px-6 py-6 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
                         <div>
                             Offering an item

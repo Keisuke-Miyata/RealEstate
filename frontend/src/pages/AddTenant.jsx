@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Select, TextInput, NumberInput, Button, Checkbox, Group } from "@mantine/core";
+import { Select, TextInput, NumberInput, Button, Checkbox, Group, Textarea } from "@mantine/core";
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
@@ -11,7 +11,7 @@ import useTenant from "../hooks/useTenant";
 
 const AddTenant = () => {
     const [preference, setPreference] = useState("");
-    const [groupMembers, setGroupMembers] = useState([{id: Date.now()}]);
+    const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]);
     const [activeUploadStep, setActiveUploadStep] = useState(0);
     const { user } = useAuth0()
 
@@ -37,6 +37,8 @@ const AddTenant = () => {
         age: 0,
         details: [],
         preference: "",
+        max: "",
+        phoneNumber: "",
         userEmail: user?.email
     });
 
@@ -110,10 +112,18 @@ const AddTenant = () => {
                 <Select
                     label="Where would you like to live?"
                     placeholder="Search for campus"
-                    data={["cassai"]}
+                    data={["Böszörményi Street Campus", "Main Campus", "Kassai Street Campus", "Engineering Campus"]}
                     className="mb-10"
                     value={formData.location}
                     onChange={(value) => setFormData({ ...formData, location: value })}
+                />
+                <Select
+                    label="Planning length of stay"
+                    placeholder='stay length'
+                    data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
+                    className='mb-10'
+                    value={formData.max}
+                    onChange={(value) => setFormData({ ...formData, max: value })}
                 />
                 <h2 className="text-lg font-semibold mb-2">Rent and timing</h2>
                 <NumberInput
@@ -139,7 +149,7 @@ const AddTenant = () => {
                 <Select
                     label="Parking"
                     placeholder=""
-                    data={["Flexible", "Off-street required"]}
+                    data={["Flexible", "Off-street required", "Garage parking", "On-street parking", "No parking"]}
                     className="mb-10"
                     value={formData.parking}
                     onChange={(value) => setFormData({ ...formData, parking: value })}
@@ -170,14 +180,14 @@ const AddTenant = () => {
                             handleInputChange={handleInputChange}
                             setFormData={setFormData}
                         />
-                        <TextInput
+                        <Textarea
                             label="Introduce yourself"
                             placeholder="Tell us about yourself"
                             name="introduction"
                             value={formData.introduction}
                             onChange={handleInputChange}
                             textarea
-                            className="h-20"
+                            className="h-20 mt-6"
                         />
                     </>
 
@@ -214,20 +224,20 @@ const AddTenant = () => {
                             value={formData.partnerFieldOfStudy}
                             onChange={(e) => setFormData((prev) => ({ ...prev, partnerFieldOfStudy: e.target.value }))}
                         />
-                        <TextInput
+                        <Select
                             label="Gender your partner identifies as"
                             placeholder="Enter your partner's gender"
                             name="partnerGender"
+                            data={["Male", "Female", "Non-Binary"]}
                             value={formData.partnerGender}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, partnerGender: e.target.value }))}
+                            onChange={(value) => setFormData((prev) => ({ ...prev, partnerGender: value }))}
                         />
-                        <TextInput
+                        <Textarea
                             label="Introduce yourself"
                             placeholder="Tell us about yourself"
                             name="introduction"
                             value={formData.introduction}
                             onChange={handleInputChange}
-                            textarea
                             className="h-20"
                         />
                     </div>
@@ -236,7 +246,16 @@ const AddTenant = () => {
                 {preference === "Group" && (
                     <div className="space-y-6">
                         <h3 className="text-lg font-semibold mb-4">Your Personal Details</h3>
-                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData}/>
+                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData} />
+                        <Textarea
+                            label="Introduce yourself"
+                            placeholder="Tell us about yourself"
+                            name="introduction"
+                            value={formData.introduction}
+                            onChange={handleInputChange}
+                            textarea
+                            className="h-20"
+                        />
                         {groupMembers.map((member, index) => (
                             <div key={member.id} className="border p-4 rounded-lg relative">
                                 <h3 className="text-lg font-semibold mb-2">Friend {index + 1}</h3>
@@ -259,21 +278,22 @@ const AddTenant = () => {
                                     className="mb-2"
                                     value={member.nationality}
                                     onChange={(e) =>
-                                        setGroupMembers((prev)=>
+                                        setGroupMembers((prev) =>
                                             prev.map((m) =>
                                                 m.id === member.id ? { ...m, nationality: e.target.value } : m
                                             )
                                         )
                                     }
                                 />
-                                <TextInput
+                                <Select
                                     label="Gender your friend identifies as"
                                     placeholder="Enter your friend's gender"
+                                    data={["Male", "Female", "Non-Binary"]}
                                     value={member.gender}
-                                    onChange={(e) =>
-                                        setGroupMembers((prev)=>
+                                    onChange={(value) =>
+                                        setGroupMembers((prev) =>
                                             prev.map((m) =>
-                                                m.id === member.id ? { ...m, gender: e.target.value } : m
+                                                m.id === member.id ? { ...m, gender: value } : m
                                             )
                                         )
                                     }
@@ -303,6 +323,7 @@ const AddTenant = () => {
                 <Checkbox.Group
                     defaultValue={["Furnished room required"]}
                     label="Select your preference"
+                    className="mt-4"
                     value={formData.details}
                     onChange={(selectedDetails) =>
                         setFormData((prevData) => ({
@@ -314,6 +335,10 @@ const AddTenant = () => {
                         <Checkbox value="Furnished room required" label="Furnish" />
                         <Checkbox value="Parking flexible" label="Parking" />
                         <Checkbox value="Internet required" label="Internet" />
+                        <Checkbox value="Pet-Friendly" label="Pet-Friendly" />
+                        <Checkbox value="Wheelchair Accessible" label="Wheelchair Accessible" />
+                        <Checkbox value="Smoking Allowed" label="Smoking Allowed" />
+                        <Checkbox value="Garden / Yard" label="Garden / Yard" />
                     </Group>
                 </Checkbox.Group>
 
@@ -330,9 +355,9 @@ const AddTenant = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center mt-20 mb-10">
-                        <Button type="submit">
-                            Submit
-                        </Button>
+                    <Button type="submit">
+                        Submit
+                    </Button>
                 </div>
             </form>
         </div>

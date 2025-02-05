@@ -3,9 +3,9 @@ import { prisma } from "../config/prismaConfig.js"
 
 //creating a property
 export const createResidency = asyncHandler(async (req, res) => {
-    const { title, accommodationType, type, address, room,
+    const { title, accommodationType, type, address, size, room, bathroom, tenants,
         rent, parking, internet, furnish, billsIncluded, bond, dateAvailability,
-        min, max, image, description, accepting, features, overview, facilities, userEmail
+        min, max, image, description, accepting, features, overview, facilities, phoneNumber, userEmail
     } = req.body.data || req.body
 
     console.log(req.body.data)
@@ -16,7 +16,10 @@ export const createResidency = asyncHandler(async (req, res) => {
                 accommodationType,
                 type,
                 address,
+                size,
                 room,
+                bathroom,
+                tenants,
                 rent,
                 parking,
                 internet,
@@ -32,6 +35,7 @@ export const createResidency = asyncHandler(async (req, res) => {
                 features,
                 overview,
                 facilities,
+                phoneNumber,
                 owner: { connect: { email: userEmail } }
             }
         })

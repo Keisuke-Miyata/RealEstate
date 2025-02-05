@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { Stepper, Button, Group, NumberInput, Select, TextInput, Radio, Textarea, Checkbox } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import UploadImage from "../components/UploadImage";
@@ -9,6 +9,8 @@ import UserDetailContext from "../context/UserDetailContext";
 import { useMutation, useQuery } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import PhoneNumberForm from "../components/PhoneNumberForm"
+
 
 const UpdatePropertyPage = () => {
     const { id } = useParams();
@@ -26,7 +28,10 @@ const UpdatePropertyPage = () => {
         accommodationType: "",
         type: "",
         address: "",
+        size: 0,
         room: 0,
+        bathroom: 0,
+        tenants: 0,
         rent: 0,
         parking: "",
         internet: "",
@@ -42,6 +47,7 @@ const UpdatePropertyPage = () => {
         features: [],
         overview: [],
         facilities: {},
+        phoneNumber: "",
         userEmail: user?.email,
     });
 
@@ -132,11 +138,32 @@ const UpdatePropertyPage = () => {
                         }
                     />
                     <NumberInput
+                        label="Size of the property"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.size}
+                        onChange={handleSelectChange("size")}
+                    />
+                    <NumberInput
                         label="Total bedrooms"
                         placeholder="1"
                         className='mb-10'
                         value={propertyDetails.room}
                         onChange={handleSelectChange("room")}
+                    />
+                    <NumberInput
+                        label="Total bathrooms"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.bathroom}
+                        onChange={handleSelectChange("bathroom")}
+                    />
+                    <NumberInput
+                        label="Total tenants"
+                        placeholder="1"
+                        className='mb-10'
+                        value={propertyDetails.tenants}
+                        onChange={handleSelectChange("tenants")}
                     />
                     <Select
                         label="Parking"
@@ -212,8 +239,16 @@ const UpdatePropertyPage = () => {
                         <Group mt="xl" ml='xl'>
                             <Checkbox value="Queen bed" label="Queen bed" />
                             <Checkbox value="Drawers" label="Drawers" />
+                            <Checkbox value="Wardrobe" label="Wardrobe" />
                             <Checkbox value="Door lock" label="Door lock" />
                             <Checkbox value="Couch" label="Couch" />
+                            <Checkbox value="Nightstand / Bedside Table" label="Nightstand / Bedside Table" />
+                            <Checkbox value="Armchair" label="Armchair" />
+                            <Checkbox value="Bookshelf" label="Bookshelf" />
+                            <Checkbox value="TV / Entertainment" label="TV / Entertainment" />
+                            <Checkbox value="Room Lock" label="Room Lock" />
+                            <Checkbox value="Curtains" label="Curtains" />
+                            <Checkbox value="Carpet" label="Carpet" />
                         </Group>
                     </Checkbox.Group>
 
@@ -223,10 +258,10 @@ const UpdatePropertyPage = () => {
                         value={propertyDetails.rent}
                         onChange={handleSelectChange("rent")}
                     />
-                    <Radio
+                    <Checkbox
                         label="Bills included in rent"
-                        className='mb-10 mt-5'
                         value={propertyDetails.billsIncluded}
+                        className='mb-10 mt-4'
                         onChange={(e) =>
                             setPropertyDetails((prev) => ({ ...prev, billsIncluded: e.target.checked }))
                         }
@@ -255,16 +290,16 @@ const UpdatePropertyPage = () => {
                     <Select
                         label="Minimum length of stay"
                         placeholder='No minimum stay'
-                        data={["2 weeks", "one year"]}
                         className='mb-10'
+                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
                         value={propertyDetails.min}
                         onChange={handleSelectChange("min")}
                     />
                     <Select
                         label="Maximum length of stay"
-                        placeholder='No minimum stay'
-                        data={["one month", "one year"]}
+                        placeholder='No maximum stay'
                         className='mb-10'
+                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
                         value={propertyDetails.max}
                         onChange={handleSelectChange("max")}
                     />
@@ -276,6 +311,12 @@ const UpdatePropertyPage = () => {
                         onChange={(e) =>
                             setPropertyDetails((prev) => ({ ...prev, description: e.target.value }))
                         }
+                    />
+                    <PhoneNumberForm
+                        formData={propertyDetails}
+                        setFormData={setPropertyDetails}
+                        value={propertyDetails.phoneNumber}
+
                     />
 
                 </Stepper.Step>
