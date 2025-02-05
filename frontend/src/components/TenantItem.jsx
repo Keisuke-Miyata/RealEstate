@@ -8,8 +8,7 @@ const TenantItem = ({ tenant }) => {
                 key={tenant.id}
                 className="card-border"
             >
-
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 mt-6">
                     <img
                         src={tenant.image[0]}
                         alt="Seeker"
@@ -23,8 +22,12 @@ const TenantItem = ({ tenant }) => {
                         </p>
                     </div>
                 </div>
-                <p className="mt-2 text-gray-700">{tenant.introduction}</p>
-                <ul className="mt-2 text-sm text-gray-600">
+
+                <div className="mt-2 text-gray-700 overflow-auto max-h-[120px]">
+                    <p>{tenant.introduction}</p>
+                </div>
+
+                <ul className="mt-2 text-sm text-gray-600 overflow-auto max-h-[80px]">
                     {tenant.details.map((detail, index) => (
                         <li key={index}>- {detail}</li>
                     ))}
