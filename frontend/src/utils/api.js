@@ -327,19 +327,6 @@ export const updateProperty = async (id, updatedData, token) => {
     }
 };
 
-// export const updateTenant = async (id, updatedData, token) => {
-//     try {
-//         const response = await api.put(`/tenant/update/${id}`, updatedData, {
-//             headers: { Authorization: `Bearer ${token}` },
-//         });
-
-//         return response.data;
-//     } catch (error) {
-//         console.error("Error updating tenant:", error);
-//         throw error;
-//     }
-// };
-
 export const updateTenant = async (id, updatedData, token) => {
     try {
         const response = await api.put(`/tenant/update/${id}`, updatedData, {

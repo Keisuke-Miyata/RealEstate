@@ -2,6 +2,18 @@
 import React from 'react';
 
 const PreviewProperty = ({ propertyDetails }) => {
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
+    const formattedDate = formatDate(propertyDetails.dateAvailability);
+
+
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6">Preview Your Property Details</h2>
@@ -24,9 +36,9 @@ const PreviewProperty = ({ propertyDetails }) => {
                     <p><strong className="font-semibold">Bathroom Count:</strong> {propertyDetails.bathroom || "N/A"}</p>
                     <p><strong className="font-semibold">Tenant Count:</strong> {propertyDetails.tenants || "N/A"}</p>
 
-                    <p><strong className="font-semibold">Rent:</strong> {propertyDetails.rent ? `${propertyDetails.rent} per month` : "N/A"}</p>
-                    <p><strong className="font-semibold">Bond:</strong> {propertyDetails.bond || "N/A"}</p>
-                    <p><strong className="font-semibold">Date Availability:</strong> {propertyDetails.dateAvailability.toString() || "N/A"}</p>
+                    <p><strong className="font-semibold">Rent:</strong> {propertyDetails.rent ? `HUF ${propertyDetails.rent} per month` : "N/A"}</p>
+                    <p><strong className="font-semibold">Bond:</strong> {propertyDetails.bond ? `HUF ${propertyDetails.rent}` : "N/A"}</p>
+                    <p><strong className="font-semibold">Date Availability:</strong> {formattedDate || "N/A"}</p>
                 </div>
 
                 {/* Features Section */}

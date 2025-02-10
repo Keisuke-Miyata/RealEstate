@@ -12,7 +12,7 @@ const Item = ({ property }) => {
         <Link to={`/place/${property.id}`}>
             <div
                 key={property.id}
-                className="card-border"
+                className="card-border card-hover"
             >
 
                 <img
@@ -20,9 +20,9 @@ const Item = ({ property }) => {
                     alt="Listing"
                     className="w-full h-48 object-cover rounded-md"
                 />
-                <div className="mt-2 flex items-center gap-4 text-gray-800">
+                <div className="mt-2 flex items-center gap-4 price">
                     HUF {property.rent} / month
-                    <span>{property.billsIncluded ? "Inc." : "Exc."} bills</span>
+                    <span className="text-gray-800">{property.billsIncluded ? "Inc." : "Exc."} bills</span>
                 </div>
                 <div className="text-gray-700">{property.address}</div>
                 <ul className="flex gap-4 mt-2 text-gray-600">

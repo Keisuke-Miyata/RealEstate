@@ -59,9 +59,9 @@ const App = () => {
                 <Route path="/shortlist" element={<Shortlist />} />
                 <Route path="/contact" element={<ContactForm />} />
                 <Route path="/item" element={<AddItem />} />
-                <Route path="/update/item/:id" element={<UpdateItemPage />} />
-                <Route path="/update/property/:id" element={<UpdatePropertyPage />} />
-                <Route path="/update/tenant/:id" element={<UpdateTenantPage />} />
+                <Route path="/update/item/:id" element={<AddItem />} />
+                <Route path="/update/property/:id" element={<AddProperty />} />
+                <Route path="/update/tenant/:id" element={<AddTenant />} />
 
               </Route>
 

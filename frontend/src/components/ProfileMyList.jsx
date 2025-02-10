@@ -61,7 +61,6 @@ const UserItemsList = ({ userEmail }) => {
         }
     };
     const handleUpdate = async (itemId, type) => {
-        console.log(`Updating item with ID: ${itemId}`);
         try {
             if (type === "property") {
                 await updateProperty(id);

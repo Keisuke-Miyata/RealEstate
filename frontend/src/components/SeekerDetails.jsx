@@ -1,12 +1,17 @@
 import React from "react";
-import { FaMoneyBill, FaCheck } from "react-icons/fa";
+import { FaMoneyBill, FaCheck, FaGlobe, FaGraduationCap } from "react-icons/fa";
 import { LuClock4 } from "react-icons/lu";
 import { FaTruck } from "react-icons/fa6";
+import { IoPersonSharp } from "react-icons/io5";
+import { ImManWoman } from "react-icons/im";
 
 const SeekerDetails = ({ post }) => {
   const dateOnly = post.preferredMoveDate.split("T")[0];
   const today = new Date().toISOString().split("T")[0];
   const moveDate = dateOnly < today ? "Now" : dateOnly;
+
+  const hasPartner = post.partnerName || post.partnerGender || post.partnerNationality || post.partnerFieldOfStudy;
+  const hasGroupMembers = post.groupMembers && post.groupMembers.length > 0;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8 mx-auto max-w-4xl">
@@ -45,17 +50,52 @@ const SeekerDetails = ({ post }) => {
         </div>
       </div>
 
-      <hr className="border-gray-200 mb-6" />
+      <hr className="mb-6" />
 
-      {/* About Me Section */}
+
       <div className="mb-8">
         <h3 className="text-2xl font-semibold text-gray-800">About Me</h3>
+        <p className="icon-item">
+          <FaGlobe className="text-blue-500" size={18} />
+          <span className="font-semibold">Nationality:</span> {post.nationality}
+        </p>
+        <p className="icon-item">
+          <FaGraduationCap className="text-green-500" size={18} />
+          <span className="font-semibold">Field of Study:</span> {post.fieldOfStudy}
+        </p>
         <p className="text-gray-700 mt-2">{post.introduction}</p>
       </div>
 
+      {/* Conditionally Show Partner Section */}
+      {hasPartner && (
+        <>
+          <hr className="border-gray-200 mb-6" />
+          <div className="mb-8">
+            <h3 className="text-2xl font-semibold text-gray-800">Partner</h3>
+            <p className="icon-item"><IoPersonSharp /><span className="font-semibold"> Name:</span> {post.partnerName}</p>
+            <p className="icon-item"><ImManWoman /><span className="font-semibold"> Gender:</span> {post.partnerGender}</p>
+            <p className="icon-item"><FaGlobe className="text-blue-500" size={18} /><span className="font-semibold"> Nationality:</span> {post.partnerNationality}</p>
+            <p className="icon-item"><FaGraduationCap className="text-green-500" size={18} /><span className="font-semibold"> Field of Study:</span> {post.partnerFieldOfStudy}</p>
+          </div>
+        </>
+      )}
+
+      {hasGroupMembers && (
+        <>
+          <hr className="border-gray-200 mb-6" />
+          <div className="mb-8">
+            <h3 className="text-2xl font-semibold text-gray-800">Group Members</h3>
+            <ul className="list-disc ml-5 text-gray-700">
+              {post.groupMembers.map((member, index) => (
+                <li key={index}>{member}</li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+
       <hr className="border-gray-200 mb-6" />
 
-      {/* Preferred Accommodation Types */}
       <div className="mb-8">
         <h3 className="text-2xl font-semibold text-gray-800">Preferred Accommodation Types</h3>
         <h4 className="text-lg font-medium text-gray-600">{post.placeType}</h4>

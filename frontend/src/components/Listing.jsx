@@ -38,21 +38,9 @@ const Listing = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center pb-10">
                 {randomItems.map((item) =>
                     item.category === "property" ? (
-                        // Render places
-                        <div
-                            key={item.id}
-                            className=" bg-white shadow-md rounded-md flex flex-col w-[300px] h-[360px]"
-                        >
                             <Item key={item.title} property={item} />
-                        </div>
                     ) : (
-                        // Render seekers
-                        <div
-                            key={item.id}
-                            className=" bg-white shadow-md rounded-md flex flex-col w-[300px] h-[360px]"
-                        >
                             <TenantItem key={item.title} tenant={item} />
-                        </div>
                     )
                 )}
             </div>

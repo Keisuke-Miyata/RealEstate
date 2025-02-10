@@ -1,23 +1,30 @@
-import { useContext, useState } from 'react';
-import { Stepper, Button, Group, NumberInput, Select, TextInput, Radio, Textarea, Checkbox } from '@mantine/core';
-import { DateInput } from '@mantine/dates'
-import UploadImage from '../components/UploadImage';
+import { useContext, useState } from "react";
+import { Stepper, Button, Group, NumberInput, Select, TextInput, Textarea, Checkbox } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
+import UploadImage from "../components/UploadImage";
 import PreviewProperty from "../components/PreviewProperty";
-import { useAuth0 } from "@auth0/auth0-react"
-import { createResidency } from "../utils/api";
-import UserDetailContext from '../context/UserDetailContext';
-import { useMutation } from 'react-query';
-import useProperties from '../hooks/useProperties';
-import { toast } from "react-toastify"
+import { useAuth0 } from "@auth0/auth0-react";
+import { updateProperty, getProperty, createResidency } from "../utils/api";
+
+import UserDetailContext from "../context/UserDetailContext";
+import { useMutation, useQuery } from "react-query";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import PhoneNumberForm from "../components/PhoneNumberForm"
-import { useNavigate } from "react-router-dom"
+import { validatePropertyForm } from "../utils/common.js"
 
 
-function AddProperty() {
+
+const UpdatePropertyPage = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [active, setActive] = useState(0);
-    const [activeUploadStep, setActiveUploadStep] = useState(0); // Separate state for UploadImage steps
-    const { user } = useAuth0()
-    const navigate = useNavigate()
+    const [activeUploadStep, setActiveUploadStep] = useState(0);
+    const [errors, setErrors] = useState({});
+    const { user } = useAuth0();
+
+    const {userDetails: { token },} = useContext(UserDetailContext);
+
     const [propertyDetails, setPropertyDetails] = useState({
         title: "",
         accommodationType: "",
@@ -43,168 +50,187 @@ function AddProperty() {
         overview: [],
         facilities: {},
         phoneNumber: "",
-        userEmail: user?.email
+        userEmail: user?.email,
     });
 
-    const [value, setValue] = useState([])
+    // Fetch property details
+    const { data } = useQuery(["property", id], () => getProperty(id), {
+        enabled: !!id,
+        onSuccess: (data) => {
+            setPropertyDetails(data)
+            setPropertyDetails({
+                ...data,
+                dateAvailability: data.dateAvailability ? new Date(data.dateAvailability) : new Date(),
+            });
+        },
+        onError: (error) => {
+            toast.error("Failed to fetch property details");
+        },
+    });
 
     const nextStep = () => {
-        setActive((current) => (current < 3 ? current + 1 : current));
-        window.scrollTo(0, 0);
-        console.log(propertyDetails)
+        const newErrors = validatePropertyForm(propertyDetails, active)
+        if (Object.keys(newErrors).length === 0) { // No errors, proceed to next step
+            setActive((current) => (current < 3 ? current + 1 : current));
+            window.scrollTo(0, 0);
+        } else {
+            setErrors(newErrors); // Set the errors for the current step
+        }
     };
     const prevStep = () => {
         setActive((current) => (current > 0 ? current - 1 : current));
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
     };
-    const nextUploadStep = () =>
-        setActiveUploadStep((current) => (current < 2 ? current + 1 : current));
-    const prevUploadStep = () =>
-        setActiveUploadStep((current) => (current > 0 ? current - 1 : current));
+    const nextUploadStep = () => setActiveUploadStep((current) => (current < 2 ? current + 1 : current));
+    const prevUploadStep = () => setActiveUploadStep((current) => (current > 0 ? current - 1 : current));
 
-    // Generic function to handle Select changes
     const handleSelectChange = (field) => (value) => {
         setPropertyDetails((prev) => ({ ...prev, [field]: value }));
     };
 
-    const {
-        userDetails: { token },
-    } = useContext(UserDetailContext)
-    const { refetch: refetchProperties } = useProperties()
-
     const { mutate, isLoading } = useMutation({
-        mutationFn: () =>
-            createResidency(
-                propertyDetails,
-                token,
-                user?.email
-            ),
-        onError: ({ response }) =>
-            toast.error(response.data.message, { position: "bottom-right" }),
-        onSettled: () => {
-            toast.success("Added successfully", { position: "bottom-right" })
-            setPropertyDetails({
-                title: "",
-                accommodationType: "",
-                type: "",
-                address: "",
-                size: 0,
-                room: 0,
-                rent: 0,
-                bathroom: 0,
-                tenants: 0,
-                parking: "",
-                internet: "",
-                furnish: "",
-                billsIncluded: false,
-                bond: 0,
-                dateAvailability: new Date(),
-                min: "",
-                max: "",
-                image: "",
-                description: "",
-                accepting: [],
-                features: [],
-                overview: [],
-                facilities: {},
-                phoneNumber: "",
-                userEmail: user?.email
-            })
-            refetchProperties();
-            setTimeout(() => {
-                navigate("/");
-            }, 3000)
-        }
-    })
+        mutationFn: async () => {
+            try {
+                if (id) {
+                    await updateProperty(id, propertyDetails, token);
+                    toast.success("Updated successfully", { position: "bottom-right" });
+                } else {
+                    await createResidency(propertyDetails, token, user?.email);
+                    toast.success("Added successfully", { position: "bottom-right" });
+                }
+                setTimeout(() => navigate("/"), 3000);
+            } catch (error) {
+                toast.error(error?.response?.data?.message || "An unexpected error occurred.", { position: "bottom-right" });
+            }
+        },
+    });
+
+    if (isLoading) return <p>Loading property details...</p>;
 
 
     return (
         <div className='mt-24 ml-[30%] mr-[28%]'>
             <Stepper active={active} onStepClick={setActive}>
                 <Stepper.Step label="First step" description="Fill out information">
-                    <TextInput
-                        placeholder="title"
-                        label="Title"
-                        className='mb-10'
-                        value={propertyDetails.title}
-                        onChange={(e) =>
-                            setPropertyDetails((prev) => ({ ...prev, title: e.target.value }))
-                        }
-                    />
-                    <Select
-                        label="What type of accommodation are you offering?"
-                        placeholder="Pick value"
-                        data={['Room(s) in an existing sharehouse', 'Whole property for rent', 'Student accommodation', 'Homestay']}
-                        className='mb-10'
-                        value={propertyDetails.accommodationType}
-                        onChange={handleSelectChange("accommodationType")}
-                    />
-                    <Select
-                        label="What type of property is this?"
-                        placeholder="pick one"
-                        data={["2+ Bedrooms", "1 Bedroom", "Studio"]}
-                        className='mb-10'
-                        value={propertyDetails.type}
-                        onChange={handleSelectChange("type")}
-                    />
-                    <TextInput
-                        placeholder="address"
-                        label="Property Address"
-                        className='mb-10'
-                        value={propertyDetails.address}
-                        onChange={(e) =>
-                            setPropertyDetails((prev) => ({ ...prev, address: e.target.value }))
-                        }
-                    />
-                    <NumberInput
-                        label="Size of the property"
-                        placeholder="1"
-                        className='mb-10'
-                        value={propertyDetails.size}
-                        onChange={handleSelectChange("size")}
-                    />
-                    <NumberInput
-                        label="Total bedrooms"
-                        placeholder="1"
-                        className='mb-10'
-                        value={propertyDetails.room}
-                        onChange={handleSelectChange("room")}
-                    />
-                    <NumberInput
-                        label="Total bathrooms"
-                        placeholder="1"
-                        className='mb-10'
-                        value={propertyDetails.bathroom}
-                        onChange={handleSelectChange("bathroom")}
-                    />
-                    <NumberInput
-                        label="Total tenants"
-                        placeholder="1"
-                        className='mb-10'
-                        value={propertyDetails.tenants}
-                        onChange={handleSelectChange("tenants")}
-                    />
-                    <Select
-                        label="Parking"
-                        placeholder='Select'
-                        data={["yes", "no"]}
-                        className='mb-10'
-                        onChange={handleSelectChange("parking")}
-                    />
-                    <Select
-                        label="Internet"
-                        placeholder='Select'
-                        data={["yes", "no"]}
-                        className='mb-10'
-                        onChange={handleSelectChange("internet")}
-                    />
-                    <Select
-                        label="Room furnishing"
-                        placeholder="Select"
-                        data={["Flexible", "Unfurnished", "Furnished"]}
-                        className='mb-10'
-                        onChange={handleSelectChange("furnish")}
-                    />
+                    <div className='form-container'>
+                        <TextInput
+                            placeholder="title"
+                            label="Title"
+                            value={propertyDetails.title}
+                            onChange={(e) =>
+                                setPropertyDetails((prev) => ({ ...prev, title: e.target.value }))
+                            }
+                        />
+                        {errors.title && <p className="error-style">{errors.title}</p>}
+                    </div>
+
+                    <div className='form-container'>
+                        <Select
+                            label="What type of accommodation are you offering?"
+                            placeholder="Pick value"
+                            data={['Room(s) in an existing sharehouse', 'Whole property for rent', 'Student accommodation', 'Homestay']}
+                            value={propertyDetails.accommodationType}
+                            onChange={handleSelectChange("accommodationType")}
+                        />
+                        {errors.accommodationType && <p className="error-style">{errors.accommodationType}</p>}
+                    </div>
+
+
+                    <div className='form-container'>
+                        <Select
+                            label="What type of property is this?"
+                            placeholder="pick one"
+                            data={["2+ Bedrooms", "1 Bedroom", "Studio"]}
+                            value={propertyDetails.type}
+                            onChange={handleSelectChange("type")}
+                        />
+                        {errors.type && <p className="error-style">{errors.type}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <TextInput
+                            placeholder="address"
+                            label="Property Address"
+                            value={propertyDetails.address}
+                            onChange={(e) =>
+                                setPropertyDetails((prev) => ({ ...prev, address: e.target.value }))
+                            }
+                        />
+                        {errors.address && <p className="error-style">{errors.address}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <NumberInput
+                            label="Size of the property"
+                            placeholder="1"
+                            value={propertyDetails.size}
+                            onChange={handleSelectChange("size")}
+                        />
+                        {errors.size && <p className="error-style">{errors.size}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <NumberInput
+                            label="Total bedrooms"
+                            placeholder="1"
+                            value={propertyDetails.room}
+                            onChange={handleSelectChange("room")}
+                        />
+                        {errors.room && <p className="error-style">{errors.room}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <NumberInput
+                            label="Total bathrooms"
+                            placeholder="1"
+                            value={propertyDetails.bathroom}
+                            onChange={handleSelectChange("bathroom")}
+                        />
+                        {errors.bathroom && <p className="error-style">{errors.bathroom}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <NumberInput
+                            label="Total tenants"
+                            placeholder="1"
+                            value={propertyDetails.tenants}
+                            onChange={handleSelectChange("tenants")}
+                        />
+                        {errors.tenants && <p className="error-style">{errors.tenants}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <Select
+                            label="Parking"
+                            placeholder='Select'
+                            data={["yes", "no"]}
+                            value={propertyDetails.parking}
+                            onChange={handleSelectChange("parking")}
+                        />
+                        {errors.parking && <p className="error-style">{errors.parking}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <Select
+                            label="Internet"
+                            placeholder='Select'
+                            data={["yes", "no"]}
+                            value={propertyDetails.internet}
+                            onChange={handleSelectChange("internet")}
+                        />
+                        {errors.internet && <p className="error-style">{errors.internet}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <Select
+                            label="Room furnishing"
+                            placeholder="Select"
+                            data={["Flexible", "Unfurnished", "Furnished"]}
+                            value={propertyDetails.furnish}
+                            onChange={handleSelectChange("furnish")}
+                        />
+                        {errors.furnish && <p className="error-style">{errors.furnish}</p>}
+                    </div>
 
                     <Checkbox.Group
                         defaultValue={['Retirees']}
@@ -280,24 +306,32 @@ function AddProperty() {
                     </Checkbox.Group>
 
                     <h2>Rent, bond and bills</h2>
-                    <NumberInput
-                        label="Monthly rent"
-                        onChange={handleSelectChange("rent")}
-                    />
+                    <div className="">
+                        <NumberInput
+                            label="Monthly rent"
+                            value={propertyDetails.rent}
+                            onChange={handleSelectChange("rent")}
+                        />
+                        {errors.rent && <p className="error-style">{errors.rent}</p>}
+                    </div>
+
                     <Checkbox
                         label="Bills included in rent"
-                        value={propertyDetails.billsIncluded}
-                        className='mb-10 mt-4'
+                        checked={propertyDetails.billsIncluded}
+                        className='mb-4 mt-2'
                         onChange={(e) =>
                             setPropertyDetails((prev) => ({ ...prev, billsIncluded: e.target.checked }))
                         }
                     />
-                    
-                    <NumberInput
-                        label="Bond"
-                        className='mb-10'
-                        onChange={handleSelectChange("bond")}
-                    />
+                    <div className="form-container">
+                        <NumberInput
+                            label="Bond"
+                            value={propertyDetails.bond}
+                            onChange={handleSelectChange("bond")}
+                        />
+                        {errors.bond && <p className="error-style">{errors.bond}</p>}
+                    </div>
+
                     <h2>Property Availability</h2>
                     {console.log(propertyDetails.address)}
                     <DateInput
@@ -310,36 +344,51 @@ function AddProperty() {
                         }
                         label="Date input"
                         placeholder="Date input"
+                        className='mt-6 mb-6'
                     />
 
 
-                    <Select
-                        label="Minimum length of stay"
-                        placeholder='No minimum stay'
-                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
-                        className='mb-10'
-                        onChange={handleSelectChange("min")}
-                    />
-                    <Select
-                        label="Maximum length of stay"
-                        placeholder='No minimum stay'
-                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
-                        className='mb-10'
-                        onChange={handleSelectChange("max")}
-                    />
-                    <Textarea
-                        label="Description"
-                        placeholder='Make it shine'
-                        className='mb-10'
-                        value={propertyDetails.description}
-                        onChange={(e) =>
-                            setPropertyDetails((prev) => ({ ...prev, description: e.target.value }))
-                        }
-                    />
-                    <PhoneNumberForm
-                        formData={propertyDetails}
-                        setFormData={setPropertyDetails}
-                    />
+                    <div className="form-container">
+                        <Select
+                            label="Minimum length of stay"
+                            placeholder='No minimum stay'
+                            data={['1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
+                            value={propertyDetails.min}
+                            onChange={handleSelectChange("min")}
+                        />
+                        {errors.min && <p className="error-style">{errors.min}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <Select
+                            label="Maximum length of stay"
+                            placeholder='No minimum stay'
+                            data={['1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
+                            value={propertyDetails.max}
+                            onChange={handleSelectChange("max")}
+                        />
+                        {errors.max && <p className="error-style">{errors.max}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <Textarea
+                            label="Description"
+                            placeholder='Make it shine'
+                            value={propertyDetails.description}
+                            onChange={(e) =>
+                                setPropertyDetails((prev) => ({ ...prev, description: e.target.value }))
+                            }
+                        />
+                        {errors.description && <p className="error-style">{errors.description}</p>}
+                    </div>
+
+                    <div className="form-container">
+                        <PhoneNumberForm
+                            formData={propertyDetails}
+                            setFormData={setPropertyDetails}
+                        />
+                        {errors.phoneNumber && (<p className="error sm:pl-0 md:pl-20">{errors.phoneNumber}</p>)}
+                    </div>
 
                 </Stepper.Step>
                 <Stepper.Step label="Second step" description="Upload Images">
@@ -350,6 +399,8 @@ function AddProperty() {
                         details={propertyDetails}
                         setDetails={setPropertyDetails}
                     />
+                    {errors.image && <p className="error-style">{errors.image}</p>}
+
                 </Stepper.Step>
                 <Stepper.Step label="Final step" description="Preview">
                     <PreviewProperty propertyDetails={propertyDetails} />
@@ -373,7 +424,7 @@ function AddProperty() {
                 )}
             </Group>
         </div>
-    );
+    )
 }
 
-export default AddProperty
+export default UpdatePropertyPage

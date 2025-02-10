@@ -4,7 +4,7 @@ import Listing from "../components/Listing"
 
 const Home = () => {
     return (
-        <div className='mx-auto max-w-[1440px] bg-fuchsia-300'>
+        <div className='mx-auto max-w-[1440px]'>
             <Hero />
             <Listing />
         </div>

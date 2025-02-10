@@ -1,19 +1,30 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Select, TextInput, NumberInput, Button, Checkbox, Group, Textarea } from "@mantine/core";
 import UploadImage from "../components/UploadImage";
 import PersonalForm from "../components/PersonalForm";
 import { DateInput } from "@mantine/dates"
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext";
-import { createTenant } from "../utils/api";
+
+import { useQuery } from "react-query"
+import { createTenant, updateTenant, getTenant } from "../utils/api";
 import { toast } from "react-toastify";
 import useTenant from "../hooks/useTenant";
+import { useParams, useNavigate } from "react-router-dom";
+import { validateTenantForm } from "../utils/common";
 
 const AddTenant = () => {
+    const { id } = useParams();//
     const [preference, setPreference] = useState("");
     const [groupMembers, setGroupMembers] = useState([{ id: Date.now() }]);
     const [activeUploadStep, setActiveUploadStep] = useState(0);
     const { user } = useAuth0()
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();//
+
+    const { userDetails: { token } } = useContext(UserDetailContext);
+    const { refetch: refetchTenant } = useTenant();
+
 
     // Form state for tenant details
     const [formData, setFormData] = useState({
@@ -42,6 +53,24 @@ const AddTenant = () => {
         userEmail: user?.email
     });
 
+    const { data: tenant, isLoading: tenantLoading } = useQuery(
+            ["tenant", id],
+            () => getTenant(id),
+            {
+                enabled: !!id,
+                onSuccess: (data) => {
+                    setFormData(data); //
+                    setGroupMembers(data.groupMembers || []);
+                    setPreference(data.preference || "");
+                    setFormData({
+                        ...data,
+                        preferredMoveDate: data.preferredMoveDate ? new Date(data.preferredMoveDate) : new Date(),
+                    });
+                }
+            }
+        );
+
+
     // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -62,35 +91,43 @@ const AddTenant = () => {
         setGroupMembers(groupMembers.filter((member) => member.id !== id));
     };
 
-    const {
-        userDetails: { token }
-    } = useContext(UserDetailContext)
-
     const updateFormData = () => {
         setFormData((prevData) => ({
             ...prevData,
             preference: preference,
-            groupMembers: groupMembers
+            groupMembers: groupMembers.map((member) => ({
+                name: member.name || "",
+                nationality: member.nationality || "",
+                gender: member.gender || "",
+            })),
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        updateFormData();
+        const newErrors = validateTenantForm(formData);
+        setErrors(newErrors);
 
-        updateFormData()
-        const dataToSubmit = {
-            ...formData,
-            preference: preference,
-            groupMembers: groupMembers
-        };
-
+        if (Object.keys(newErrors).length > 0) {
+            console.error("Form validation failed:", newErrors);
+            return;
+        }
 
         try {
-            const response = createTenant(dataToSubmit, token, user?.email)
-            console.log("Tenant data submitted successfully:", response.data);
-        } catch (error) {
-            console.error("Error submitting tenant data:", error);
-        }
+                    if (id) {
+                        await updateTenant(id, formData, token);
+                        toast.success("Tenant updated successfully", { position: "bottom-right" });
+                    } else {
+                        await createTenant(formData, token, user?.email);
+                        toast.success("Tenant added successfully", { position: "bottom-right" });
+                    }
+        
+                    setTimeout(() => navigate("/"), 3000);
+                } catch (error) {
+                    console.error("Error processing tenant data:", error);
+                    toast.error(error?.response?.data?.message || "An unexpected error occurred.", { position: "bottom-right" });
+                }
     };
 
     const nextUploadStep = () =>
@@ -101,59 +138,83 @@ const AddTenant = () => {
     return (
         <div className='mt-40 ml-[30%] mr-[28%]'>
             <form onSubmit={handleSubmit}>
-                <Select
-                    label="What type of place are you looking for"
-                    placeholder=""
-                    data={["Room(s) in an existing sharehouse", "Studio", "One bed flat", "Shared Room"]}
-                    className="mb-10"
-                    value={formData.placeType}
-                    onChange={(value) => setFormData({ ...formData, placeType: value })}
-                />
-                <Select
-                    label="Where would you like to live?"
-                    placeholder="Search for campus"
-                    data={["Böszörményi Street Campus", "Main Campus", "Kassai Street Campus", "Engineering Campus"]}
-                    className="mb-10"
-                    value={formData.location}
-                    onChange={(value) => setFormData({ ...formData, location: value })}
-                />
-                <Select
-                    label="Planning length of stay"
-                    placeholder='stay length'
-                    data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
-                    className='mb-10'
-                    value={formData.max}
-                    onChange={(value) => setFormData({ ...formData, max: value })}
-                />
+                <div className="form-container">
+                    <Select
+                        label="What type of place are you looking for"
+                        placeholder=""
+                        data={["Room(s) in an existing sharehouse", "Studio", "One bed flat", "Shared Room"]}
+                        value={formData.placeType}
+                        onChange={(value) => setFormData({ ...formData, placeType: value })}
+                    />
+                    {errors.placeType && <p className="error-style">{errors.placeType}</p>}
+                </div>
+
+                <div className="form-container">
+                    <Select
+                        label="Where would you like to live?"
+                        placeholder="Search for campus"
+                        data={["Böszörményi Street Campus", "Main Campus", "Kassai Street Campus", "Engineering Campus"]}
+                        className=""
+                        value={formData.location}
+                        onChange={(value) => setFormData({ ...formData, location: value })}
+                    />
+                    {errors.location && <p className="error-style">{errors.location}</p>}
+                </div>
+
+                <div className="form-container">
+                    <Select
+                        label="Planning length of stay"
+                        placeholder='stay length'
+                        data={["2 weeks", '1 month', '2 months', '3 months', '4 months', '5 months', '6 months', '7 months', '8 months', '9 months', '10 months', '11 months', '12 months']}
+                        className=''
+                        value={formData.max}
+                        onChange={(value) => setFormData({ ...formData, max: value })}
+                    />
+                    {errors.max && <p className="error-style">{errors.max}</p>}
+                </div>
+
+
                 <h2 className="text-lg font-semibold mb-2">Rent and timing</h2>
-                <NumberInput
-                    label="Monthly budget"
-                    className="mb-10"
-                    value={formData.monthlyBudget}
-                    onChange={(value) => setFormData({ ...formData, monthlyBudget: value })}
-                />
+                <div className="form-container">
+                    <NumberInput
+                        label="Monthly budget"
+                        value={formData.monthlyBudget}
+                        onChange={(value) => setFormData({ ...formData, monthlyBudget: value })}
+                    />
+                    {errors.monthlyBudget && <p className="error-style">{errors.monthlyBudget}</p>}
+                </div>
+
+
                 <DateInput
                     label="Preferred move date"
                     className="mb-10"
                     value={formData.preferredMoveDate}
                     onChange={(value) => setFormData((prev) => ({ ...prev, preferredMoveDate: value }))}
                 />
-                <Select
-                    label="Max number of flatmates"
-                    placeholder=""
-                    data={["Flexible", "1 other", "2+ others"]}
-                    className="mb-10"
-                    value={formData.maxFlatmates}
-                    onChange={(value) => setFormData({ ...formData, maxFlatmates: value })}
-                />
-                <Select
-                    label="Parking"
-                    placeholder=""
-                    data={["Flexible", "Off-street required", "Garage parking", "On-street parking", "No parking"]}
-                    className="mb-10"
-                    value={formData.parking}
-                    onChange={(value) => setFormData({ ...formData, parking: value })}
-                />
+                <div className="form-container">
+                    <Select
+                        label="Max number of flatmates"
+                        placeholder=""
+                        data={["Flexible", "1 other", "2+ others"]}
+                        className=""
+                        value={formData.maxFlatmates}
+                        onChange={(value) => setFormData({ ...formData, maxFlatmates: value })}
+                    />
+                    {errors.maxFlatmates && <p className="error-style">{errors.maxFlatmates}</p>}
+                </div>
+
+                <div className="form-container">
+                    <Select
+                        label="Parking"
+                        placeholder=""
+                        data={["Flexible", "Off-street required", "Garage parking", "On-street parking", "No parking"]}
+                        value={formData.parking}
+                        onChange={(value) => setFormData({ ...formData, parking: value })}
+                    />
+                    {errors.parking && <p className="error-style">{errors.parking}</p>}
+                </div>
+
+
 
                 {/* Selectable Items */}
                 <div className="mb-6">
@@ -179,16 +240,22 @@ const AddTenant = () => {
                             formData={formData}
                             handleInputChange={handleInputChange}
                             setFormData={setFormData}
+                            errors={errors}
                         />
-                        <Textarea
-                            label="Introduce yourself"
-                            placeholder="Tell us about yourself"
-                            name="introduction"
-                            value={formData.introduction}
-                            onChange={handleInputChange}
-                            textarea
-                            className="h-20 mt-6"
-                        />
+                        <div className="form-container">
+                            <Textarea
+                                label="Introduce yourself"
+                                placeholder="Tell us about yourself"
+                                name="introduction"
+                                value={formData.introduction}
+                                onChange={handleInputChange}
+                                textarea
+                                className="h-20 mt-6"
+                            />
+                            {errors.introduction && <p className="error-style">{errors.introduction}</p>}
+                        </div>
+
+
                     </>
 
                 )}
@@ -199,6 +266,7 @@ const AddTenant = () => {
                             formData={formData}
                             handleInputChange={handleInputChange}
                             setFormData={setFormData}
+                            errors={errors}
                         />
 
                         <h3 className="text-lg font-semibold">About Your Partner</h3>
@@ -232,30 +300,37 @@ const AddTenant = () => {
                             value={formData.partnerGender}
                             onChange={(value) => setFormData((prev) => ({ ...prev, partnerGender: value }))}
                         />
-                        <Textarea
-                            label="Introduce yourself"
-                            placeholder="Tell us about yourself"
-                            name="introduction"
-                            value={formData.introduction}
-                            onChange={handleInputChange}
-                            className="h-20"
-                        />
+                        <div className="form-container">
+                            <Textarea
+                                label="Introduce yourself"
+                                placeholder="Tell us about yourself"
+                                name="introduction"
+                                value={formData.introduction}
+                                onChange={handleInputChange}
+                                textarea
+                                className="h-20 mt-6"
+                            />
+                            {errors.introduction && <p className="error-style">{errors.introduction}</p>}
+                        </div>
                     </div>
                 )}
 
                 {preference === "Group" && (
                     <div className="space-y-6">
                         <h3 className="text-lg font-semibold mb-4">Your Personal Details</h3>
-                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData} />
-                        <Textarea
-                            label="Introduce yourself"
-                            placeholder="Tell us about yourself"
-                            name="introduction"
-                            value={formData.introduction}
-                            onChange={handleInputChange}
-                            textarea
-                            className="h-20"
-                        />
+                        <PersonalForm formData={formData} handleInputChange={handleInputChange} setFormData={setFormData} errors={errors} />
+                        <div className="form-container">
+                            <Textarea
+                                label="Introduce yourself"
+                                placeholder="Tell us about yourself"
+                                name="introduction"
+                                value={formData.introduction}
+                                onChange={handleInputChange}
+                                textarea
+                                className="h-20 mt-6"
+                            />
+                            {errors.introduction && <p className="error-style">{errors.introduction}</p>}
+                        </div>
                         {groupMembers.map((member, index) => (
                             <div key={member.id} className="border p-4 rounded-lg relative">
                                 <h3 className="text-lg font-semibold mb-2">Friend {index + 1}</h3>
@@ -351,6 +426,7 @@ const AddTenant = () => {
                         details={formData}
                         setDetails={setFormData}
                     />
+                        {errors.image && <p className="error-style">{errors.image}</p>}
                 </div>
 
                 {/* Submit Button */}

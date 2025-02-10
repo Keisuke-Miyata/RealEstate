@@ -45,4 +45,32 @@
     .card-detail {
         @apply m-16 md:ml-28 md:mr-28 lg:ml-48 lg:mr-48 xl:ml-96 xl:mr-96;
     }
+
+    .card-hover {
+        @apply hover:scale-[1.02] hover:shadow-lg transition duration-100 ease-in-out ;
+    }
+
+    .error-style {
+        @apply text-red-500 flex justify-end text-sm;
+    }
+
+    .form-container {
+        @apply mb-8;
+    }
+
+    .error {
+        @apply text-red-500 text-sm;
+    }
+
+    .text-overflow {
+        @apply overflow-auto max-h-[120px];
+    }
+
+    .price {
+        @apply text-green-600 font-bold;
+    }
+
+    .icon-item {
+        @apply flex items-center gap-2 text-gray-700 mt-1;
+    }
 }

@@ -6,9 +6,6 @@ const UpdateButton = ({ onUpdate, itemId, itemType }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        // if (window.confirm(`Are you sure you want to update this ${itemType}?`)) {
-        //     onUpdate(itemId);
-        // }
         navigate(`/update/${itemType}/${itemId}`);
 
     };
@@ -16,7 +13,7 @@ const UpdateButton = ({ onUpdate, itemId, itemType }) => {
     return (
         <button
             onClick={handleClick}
-            className="absolute top-2 left-3 flex items-center px-4 py-2 overflow-hidden font-sm text-sm transition-all bg-green-500 rounded-md opacity-80 hover:opacity-100 group"
+            className="absolute top-2 left-3 flex items-center px-4 py-2 overflow-hidden font-sm text-sm transition-all bg-green-500 rounded-md opacity-80 hover:opacity-100 group z-10"
         >
             <span className="absolute top-0 right-0 inline-block w-3 h-3 transition-all duration-500 ease-in-out bg-green-700 rounded group-hover:-mr-3 group-hover:-mt-3">
                 <span className="absolute top-0 right-0 w-4 h-4 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
