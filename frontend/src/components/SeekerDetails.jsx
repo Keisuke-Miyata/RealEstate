@@ -11,7 +11,7 @@ const SeekerDetails = ({ post }) => {
   const moveDate = dateOnly < today ? "Now" : dateOnly;
 
   const hasPartner = post.partnerName || post.partnerGender || post.partnerNationality || post.partnerFieldOfStudy;
-  const hasGroupMembers = post.groupMembers && post.groupMembers.length > 0;
+  const hasGroupMembers = post.groupMembers && post.groupMembers.length > 1;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8 mx-auto max-w-4xl">
@@ -87,7 +87,7 @@ const SeekerDetails = ({ post }) => {
             <h3 className="text-2xl font-semibold text-gray-800">Group Members</h3>
             <ul className="list-disc ml-5 text-gray-700">
               {post.groupMembers.map((member, index) => (
-                <li key={index}>{member}</li>
+                <li key={index}>{member.name} - {member.nationality}</li>
               ))}
             </ul>
           </div>

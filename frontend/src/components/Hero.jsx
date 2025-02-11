@@ -18,7 +18,7 @@ const Hero = () => {
                     <div className="col-start-1 col-span-1 w-[340px]">
                         <button
                             onClick={() => validateLogin() && navigate("/tenant")}
-                            className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
+                            className="create-button">
                             <div className='m'>
                                 Offering a place to stay
                                 <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need a tenant</h4>
@@ -33,7 +33,7 @@ const Hero = () => {
                     <div className="col-start-q col-span-1 w-[340px]">
                         <button
                             onClick={() => validateLogin() && navigate("/place")}
-                            className="bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center">
+                            className="create-button">
                             <div>
                                 Looking for a place to stay
                                 <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need a place</h4>

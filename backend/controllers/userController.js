@@ -1,9 +1,8 @@
 import { prisma } from "../config/prismaConfig.js"
 import asyncHandler from "express-async-handler"
 
-//Creating a user
+
 export const createUser = asyncHandler(async (req, res) => {
-    console.log("creating a user")
 
     let { email, name } = req.body
     const userExists = await prisma.user.findUnique({ where: { email } })
@@ -37,7 +36,6 @@ export const getUser = asyncHandler(async (req, res) => {
     }
 });
 
-// Adding a property to the list of the user's favorites
 export const toFav = asyncHandler(async (req, res) => {
     const { email } = req.body
     const { rid } = req.params
@@ -73,7 +71,6 @@ export const toFav = asyncHandler(async (req, res) => {
     }
 })
 
-// Getting all user's properties
 export const getAllFav = asyncHandler(async (req, res) => {
     const { email } = req.body
     try {

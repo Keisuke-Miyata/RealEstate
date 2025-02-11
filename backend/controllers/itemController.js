@@ -5,7 +5,7 @@ export const createItem = asyncHandler(async (req, res) => {
     const {
         title, condition, address, price, description, image, userEmail
     } = req.body.data || req.body
-    console.log(req.body.data)
+
     try {
         const item = await prisma.item.create({
             data: {

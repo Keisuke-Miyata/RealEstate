@@ -27,15 +27,17 @@ const Tenants = () => {
     }
 
     return (
-        <main className="max-w-[1440px] mx-auto min-h-screen flex items-center justify-center">
+        <main className="max-w-[1440px] mx-auto min-h-screen">
 
             {data.length === 0 ? (
-                <div className="text-center text-gray-500 mt-28">
+                <div className="flex items-center justify-center">
+                <div className="text-center text-gray-500 mt-[400px]">
                     <h2 className="text-2xl font-semibold">No one is looking for place yet</h2>
                     <p className="mt-2">Take a look at other tabs.</p>
                 </div>
+                </div>
             ):(
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-28">
+            <div className="card-container mt-28">
                 {data.map((tenant) =>
                     <TenantItem key={tenant.title} tenant={tenant} />
                 )}

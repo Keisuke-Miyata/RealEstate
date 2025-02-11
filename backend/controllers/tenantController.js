@@ -9,7 +9,6 @@ export const createTenant = asyncHandler(async (req, res) => {
         parking, image, location, placeType, age, details, preference, max, phoneNumber, userEmail
     } = req.body.data || req.body
 
-    console.log("created tenant component")
 
     try {
         const tenant = await prisma.tenant.create({

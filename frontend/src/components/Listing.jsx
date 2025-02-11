@@ -35,7 +35,7 @@ const Listing = () => {
 
     return (
         <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center pb-10">
+            <div className="card-container pb-10">
                 {randomItems.map((item) =>
                     item.category === "property" ? (
                             <Item key={item.title} property={item} />

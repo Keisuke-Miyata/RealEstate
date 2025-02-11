@@ -73,4 +73,12 @@
     .icon-item {
         @apply flex items-center gap-2 text-gray-700 mt-1;
     }
+
+    .card-container {
+        @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center;
+    }
+
+    .create-button {
+        @apply bg-red-200 px-6 py-4 rounded-md hover:bg-orange-300 transition flex justify-center items-center;
+    }
 }

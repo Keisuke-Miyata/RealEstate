@@ -28,14 +28,12 @@ const Place = () => {
     }
 
     return (
-        <main>
-            <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-32 mb-10">
+        <main className="max-w-[1440px] mx-auto">
+                <div className="card-container mt-32 mb-10">
                     {data.map((property) =>
                         <Item key={property.title} property={property} />
                         )}
                 </div>
-            </div>
         </main>
     )
 }

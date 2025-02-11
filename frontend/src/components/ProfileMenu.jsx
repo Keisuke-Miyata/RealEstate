@@ -20,7 +20,9 @@ const ProfileMenu = ({ user, logout }) => {
                 </Menu.Item>
                 <Menu.Item onClick={() => {
                     localStorage.clear()
-                    logout()
+                    logout({
+                        logoutParams: { returnTo: import.meta.env.VITE_REDIRECT_URL }
+                    })
                 }} color="red">
                     logout
                 </Menu.Item>
