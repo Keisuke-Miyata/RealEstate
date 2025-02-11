@@ -23,7 +23,7 @@ app.use(cors({
     origin: [process.env.FRONTEND, "http://localhost:5173"],
     credentials: true
   }));
-  
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
