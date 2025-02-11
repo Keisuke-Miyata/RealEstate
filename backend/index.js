@@ -22,7 +22,17 @@ app.use(cookieParser())
 app.use(cors({
     origin: [process.env.FRONTEND, "http://localhost:5173"],
     credentials: true
-  }));
+}));
+
+// Add Access Control Allow Origin headers
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
@@ -50,9 +60,9 @@ app.post('/send-message', (req, res) => {
     console.log(email, message, subject)
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.status(500).json({message: `Error sending email.`, error: error.toString() });
+            return res.status(500).json({ message: `Error sending email.`, error: error.toString() });
         }
-        res.status(200).json({ message: 'Message sent successfully!', info})
+        res.status(200).json({ message: 'Message sent successfully!', info })
     });
 })
 
