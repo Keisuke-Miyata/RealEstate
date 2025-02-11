@@ -20,8 +20,8 @@ const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: process.env.FRONTEND, // Your frontend URL
-    credentials: true // Enable cookies for cross-origin requests if necessary
+    origin: [process.env.FRONTEND, "http://localhost:5173"],
+    credentials: true
   }));
   
 app.use(bodyParser.urlencoded({ extended: false }));
