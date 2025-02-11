@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect, useContext } from "react"
-import { Link, Await, data } from "react-router-dom"
+import { Link, Await, data, useNavigate } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import UserDetailContext from "../context/UserDetailContext"
 import { getAllFav } from "../utils/api"
@@ -11,6 +11,7 @@ const Profile = () => {
     const { user, logout, getAccessTokenSilently } = useAuth0()
     const { token } = useContext(UserDetailContext)
     const [favorites, setFavorites] = useState([])
+    const navigate = useNavigate()
 
     useEffect(() => {
         console.log(user);  // Log the user object
@@ -28,12 +29,12 @@ const Profile = () => {
                 console.log("Error while fetching data", error);
             }
         };
-    
+
         if (user) {
             fetchFavorites();
         }
     }, [user, getAccessTokenSilently]);
-    
+
 
 
 
@@ -62,11 +63,11 @@ const Profile = () => {
                     <span>
                         Email: <b>{user.email}</b>
                     </span>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-[150px]" 
-                        onClick={()=>{
+                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-[150px]"
+                        onClick={() => {
                             localStorage.clear()
                             logout()
-                    }}>
+                        }}>
                         Logout
                     </button>
                 </div>
@@ -77,9 +78,8 @@ const Profile = () => {
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl font-bold">My List</h1>
                 </div>
-                <hr className="mb-4 border-black"  />
-                <ProfileMyList userEmail={user?.email}/>
-                {/* Uncomment below for Suspense List */}
+                <hr className="mb-4 border-black" />
+                <ProfileMyList userEmail={user?.email} />
                 {/* <Suspense fallback={<p>Loading...</p>}>
                     <Await
                         resolve={data.postResponse}
@@ -92,12 +92,19 @@ const Profile = () => {
 
             {/* Saved List Section */}
             <div className="mt-12">
-                <h1 className="text-xl font-bold mb-4">Saved List</h1>
-                <hr className="mb-4 border-black"  />
+            <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-bold">Saved List</h1>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[150px]"
+                    onClick={() => {
+                        navigate("/shortlist");
+                    }}>
+                    Saved List
+                </button>
+            </div>
+                <hr className="mb-4 border-black" />
 
                 <SavedList />
 
-                {/* Uncomment below for Suspense List */}
                 {/* <Suspense fallback={<p>Loading...</p>}>
                     <Await
                         resolve={data.postResponse}

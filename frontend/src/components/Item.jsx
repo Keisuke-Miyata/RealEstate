@@ -30,10 +30,10 @@ const Item = ({ property }) => {
                         <FaBed /> {property.room}
                     </li>
                     <li className="flex items-center gap-1">
-                        <FaShower /> {property.room}
+                        <FaShower /> {property.bathroom}
                     </li>
                     <li className="flex items-center gap-1">
-                        <FaHouseUser /> {property.room}
+                        <FaHouseUser /> {property.tenants}
                     </li>
                     <li>{property.type} in Flatshare</li>
                 </ul>
