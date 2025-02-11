@@ -9,9 +9,9 @@ createRoot(document.getElementById('root')).render(
     domain="dev-zsmslfhobltorldf.us.auth0.com"
     clientId="Mxlp3hfqHHja7T9bbx8CA5vmKUpUJIHw"
     authorizationParams={{
-      redirect_uri: "http://localhost:5173"
+      redirect_uri: process.env.REDIRECT_URL
     }}
-    audience="http://localhost:3000"
+    audience={process.env.AUDIENCE}
     scope="openid profile email name picture username"
     >
       <StrictMode>
