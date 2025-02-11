@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
-import homeLogo from "../assets/react_logo.png"
+import homeLogo from "../assets/house-color-icon128.png"
 import Navbar from "./Navbar"
 import { MdMenu, MdClose } from "react-icons/md"
 import { LuUserRound } from "react-icons/lu"

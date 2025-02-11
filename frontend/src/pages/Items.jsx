@@ -3,7 +3,7 @@ import { PuffLoader } from "react-spinners"
 import SellItem from "../components/SellItem"
 import useItems from "../hooks/useItems"
 import { useNavigate } from "react-router"
-import house from "../assets/house.jpg"
+import itemIcon from "../assets/product-delivery-icon128.png"
 import useAuthCheck from "../hooks/useAuthCheck"
 
 
@@ -46,7 +46,7 @@ const Items = () => {
                             <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need buyers</h4>
                         </div>
                         <div>
-                            <img src={house} alt="House" className="h-20 ml-4" />
+                            <img src={itemIcon} alt="House" className="h-20 ml-4" />
                         </div>
                     </button>
                 </div>

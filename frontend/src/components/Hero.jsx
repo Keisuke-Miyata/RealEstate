@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import house from "../assets/house.jpg";
+import house from "../assets/property-color-icon128.png";
+import tenant from "../assets/hometenant-icon128.png";
+
 import useAuthCheck from "../hooks/useAuthCheck"
 
 const Hero = () => {
@@ -37,7 +39,7 @@ const Hero = () => {
                                 <h4 className="bg-black text-white mt-2 py-2 text-center rounded-md">I need a place</h4>
                             </div>
                             <div>
-                                <img src={house} alt="House" className="h-20 ml-4" />
+                                <img src={tenant} alt="House" className="h-20 ml-4" />
                             </div>
                         </button>
                     </div>
