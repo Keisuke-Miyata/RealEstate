@@ -14,6 +14,7 @@
     "@mantine/core": "^7.16.1",
     "@mantine/dates": "^7.16.1",
     "@mantine/hooks": "^7.16.1",
+    "@types/react-leaflet": "^2.8.3",
     "axios": "^1.7.9",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
@@ -42,6 +43,7 @@
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.0.5"
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
   }
 }

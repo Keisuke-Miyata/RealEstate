@@ -43,7 +43,7 @@
     }
 
     .card-detail {
-        @apply m-16 md:ml-28 md:mr-28 lg:ml-48 lg:mr-48 xl:ml-96 xl:mr-96;
+        @apply m-16 md:ml-28 md:mr-28 lg:ml-48 lg:mr-48 xl:ml-80 xl:mr-80;
     }
 
     .card-hover {
