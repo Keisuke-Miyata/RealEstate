@@ -27,7 +27,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ images }) => {
     }
 
     return (
-        <div id="default-carousel" className="relative w-full top-20" data-carousel="slide">
+        <div id="default-carousel" className="relative top-20" data-carousel="slide">
             <FavoriteButton id={id} type={type} />
 
             <div className="relative h-56 overflow-hidden rounded-lg md:h-96">

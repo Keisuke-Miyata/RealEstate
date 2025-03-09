@@ -21,9 +21,9 @@ const SellItem: FC<SellItemProps> = ({ item }) => {
                 <img
                     src={item.image[0]}
                     alt="Listing"
-                    className="w-full h-48 object-cover rounded-md"
+                    className="w-full h-36 object-cover rounded-md"
                 />
-                <div className="p-4">
+                <div className="py-4">
 
                     <h2 className="text-xl font-semibold text-gray-900 truncate">
                         {item.title}
@@ -33,7 +33,7 @@ const SellItem: FC<SellItemProps> = ({ item }) => {
                         <span className="price">
                             HUF {item.price.toLocaleString()}
                         </span>
-                        <span className="px-2 py-1 text-xs bg-gray-200 rounded-sm">
+                        <span className="px-1 py-1 text-xs bg-gray-200 rounded-sm">
                             {item.condition || "Unknown Condition"}
                         </span>
                     </div>
