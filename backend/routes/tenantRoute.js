@@ -4,7 +4,7 @@ import jwtCheck from "../config/auth0Config.js"
 
 const router = express.Router()
 
-router.post("/createTenant", jwtCheck, createTenant)
+router.post("/createTenant", createTenant)
 router.get("/allTenants", getAllTenants)
 router.get('/allUserTenants', getAllUserTenant)
 router.put("/update/:id", updateTenant)
