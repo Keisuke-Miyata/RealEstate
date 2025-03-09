@@ -45,6 +45,10 @@ var transporter = nodemailer.createTransport({
     }
 })
 
+app.get("/", (req, res) => {
+    res.send("Backend is running")
+})
+
 app.post('/send-message', (req, res) => {
     const { email, message, subject, selectedButton } = req.body;
 

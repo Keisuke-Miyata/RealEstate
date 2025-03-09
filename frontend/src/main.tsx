@@ -6,6 +6,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 
 const rootElement: HTMLElement | null = document.getElementById('root');
+
 if (rootElement) {
   createRoot(rootElement).render(
     <Auth0Provider
