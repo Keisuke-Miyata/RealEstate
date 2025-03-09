@@ -4,7 +4,7 @@ import { FaBed, FaShower, FaHouseUser } from "react-icons/fa";
 
 interface Card {
     id: string;
-    image: string;
+    image: string[];
     title: string;
     room?: number;
     bathroom?: number;
@@ -72,7 +72,7 @@ const SavedList: FC = () => {
                         {favoriteItems.map((card) => (
                             <div key={card.id} className="flex-none w-64 snap-center">
                                 <div className="border border-gray-300 rounded-lg overflow-hidden mb-4">
-                                    <img src={card.image} alt="" className="w-full h-40 object-cover" />
+                                    <img src={card.image[0]} alt="" className="w-full h-40 object-cover" />
                                     <div className="p-4">
                                         <h3 className="text-md leading-6 font-bold text-gray-900">{card.title}</h3>
 
