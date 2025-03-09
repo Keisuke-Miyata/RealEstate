@@ -133,6 +133,8 @@ app.post('/send-message', (req, res) => {
         text: updatedMessage
     };
 
+    console.log(email, message, subject)
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             return res.status(500).json({ message: `Error sending email.`, error: error.toString() });

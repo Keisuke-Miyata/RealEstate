@@ -77,21 +77,49 @@ const UploadImage: FC<UploadImageProps> = ({ activeUploadStep, prevStep, nextSte
                     <h4>Uploaded Images:</h4>
                     <div className="grid grid-cols-3 gap-4">
                         {details.image?.map((url: string, index: number) => (
-                            <div key={index} className="relative">
+                            <div key={index} className="flex gap-2">
                                 <img
                                     src={url}
                                     alt={`Uploaded ${index + 1}`}
                                     className="w-24 h-24 object-cover rounded-md"
                                 />
+
                                 <button
                                     onClick={() => handleDelete(index)}
-                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-md hover:bg-red-700 transition"
-                                ><MdDelete size={16} /></button>
+                                    className="w-6 h-6 bg-red-500 text-white pl-1 rounded-full shadow-md hover:bg-red-700 transition"
+                                >
+                                    <MdDelete size={16} />
+                                </button>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
+
+{/* {(details.image || []).length > 0 && (
+    <div className="mt-4">
+        <h4>Uploaded Images:</h4>
+        <div className="grid grid-cols-3 gap-4">
+            {details.image?.map((url: string, index: number) => (
+                <div key={index} className="relative flex gap-2">
+                    <img
+                        src={url}
+                        alt={`Uploaded ${index + 1}`}
+                        className="w-24 h-24 object-cover rounded-md"
+                    />
+
+                    <button
+                        onClick={() => handleDelete(index)}
+                        className="absolute top-0 right-0 w-6 h-6 bg-red-500 text-white pl-1 rounded-full shadow-md hover:bg-red-700 transition sm:static sm:w-auto sm:h-auto sm:pl-0"
+                    >
+                        <MdDelete size={16} />
+                    </button>
+                </div>
+            ))}
+        </div>
+    </div>
+)} */}
+
 
             <Group justify="center" mt={"xl"}>
                 <Button onClick={handleNext} disabled={!imageURL}>
