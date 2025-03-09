@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import { prisma } from "../config/prismaConfig.js"
 
-//creating a property
+
 export const createResidency = asyncHandler(async (req, res) => {
     const { title, accommodationType, type, address, size, room, bathroom, tenants,
         rent, parking, internet, furnish, billsIncluded, bond, dateAvailability,

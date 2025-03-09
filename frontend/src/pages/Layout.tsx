@@ -28,7 +28,7 @@ const Layout: FC = () => {
 
             const token = await getAccessTokenWithPopup({
                 authorizationParams: {
-                    audience: import.meta.env.VITE_BASE_URL,
+                    audience: import.meta.env.VITE_AUDIENCE_URL,
                     scope: "openid profile email name picture username"
                 }
             });
