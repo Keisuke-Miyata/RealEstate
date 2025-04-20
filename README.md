@@ -47,15 +47,33 @@ The platform is designed to support:
     ```bash
     cd backend
     npm install
+4. Setup .env file:
+   - Frontend:
+     ```bash
+     VITE_API_URL="http://localhost:3000/api"
+     VITE_REDIRECT_URL="http://localhost:5173"
+     VITE_AUDIENCE_URL="http://localhost:3000"
+     VITE_PUBLIC_CLOUDINARY_CLOUD_NAME
+     VITE_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+     VITE_BASE_URL="http://localhost:3000/"
+   - Backend:
+     ```bash
+     PORT = 3000
+     MONGO_URL
+     GMAIL_PASSWORD
+     GMAIL_ADDRESS
+     AUDIENCE_URL="http://localhost:3000"
+     ISSUER_BASE_URL= your auth0 url
+     FRONTEND="http://localhost:5173"
 
-5. Start the development servers:
+6. Start the development servers:
    - Frontend:
      ```bash
      npm run dev
    - Backend:
      ```bash
-     npm run dev
-6. Visit the app in your browser at http://localhost:5173.
+     nodemon index.js
+7. Visit the app in your browser at http://localhost:5173.
 
 ## Usage
 User Registration and Login: Users can log in using their credentials.
